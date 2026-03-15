@@ -61,15 +61,6 @@ def my_complaints(request):
     for c in complaints:
         c.update_escalation_status()
 
-        # Temp attributes for template – support ManyToMany departments
-        depts = list(c.departments.all())
-        c.higher_authority_contact = (
-            ", ".join(
-                [d.higher_authority_contact for d in depts if d.higher_authority_contact]
-            )
-            if depts and c.is_overdue
-            else "N/A"
-        )
         # Flag if there are any unread notifications for this complaint for the current user
         c.has_unread_notifications = Notification.objects.filter(
             user=request.user, complaint=c, is_read=False
@@ -82,17 +73,7 @@ def complaint_detail(request, pk):
     c = get_object_or_404(Complaint, pk=pk)
     
     c.update_escalation_status()
-    is_overdue = c.is_overdue
-    depts = list(c.departments.all())
-    contact_info = (
-        ", ".join(
-            [d.higher_authority_contact for d in depts if d.higher_authority_contact]
-        )
-        if depts and is_overdue
-        else "N/A"
-    )
-
-    return render(request, 'complaints/complaint_detail.html', {'complaint': c, 'is_overdue': is_overdue, 'contact_info': contact_info})
+    return render(request, 'complaints/complaint_detail.html', {'complaint': c})
 
 @login_required
 @require_POST

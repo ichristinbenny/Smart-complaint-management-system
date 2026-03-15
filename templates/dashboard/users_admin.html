@@ -59,9 +59,11 @@
                     <td style="padding: 1rem; text-align: center;">
                         {% if not u.is_superuser %}
                         <form method="post" action="{% url 'toggle_user_status' u.id %}" style="display: inline;">
+                        </form>
+                        <form method="post" action="{% url 'delete_user' u.id %}" style="display: inline;" onsubmit="return confirm('Are you sure you want to permanently delete user {{ u.username }}? This action cannot be undone.');">
                             {% csrf_token %}
-                            <button type="submit" class="btn {% if u.is_active %}btn-danger{% else %}btn-success{% endif %}" style="padding: 0.25rem 0.5rem; font-size: 0.7rem;">
-                                {% if u.is_active %}Suspend{% else %}Activate{% endif %}
+                            <button type="submit" class="btn btn-danger" style="padding: 0.25rem 0.5rem; font-size: 0.7rem; background: var(--danger-color);">
+                                Delete
                             </button>
                         </form>
                         {% endif %}

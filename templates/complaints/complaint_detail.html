@@ -1,6 +1,29 @@
 {% extends 'base.html' %}
 {% load i18n %}
 
+{% block extra_head %}
+<style>
+    .authority-item:last-child {
+        border-bottom: none !important;
+        padding-bottom: 0 !important;
+    }
+</style>
+{% if user.is_department_admin and complaint.latitude and complaint.longitude %}
+<!-- Leaflet CSS and JS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<style>
+    #map {
+        height: 300px;
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border);
+        margin-top: 1rem;
+        z-index: 10;
+    }
+</style>
+{% endif %}
+{% endblock %}
+
 {% block content %}
 <div class="form-page" style="max-width: 900px;">
     <div class="page-header mb-4">
@@ -22,19 +45,48 @@
     </div>
 
     <div class="content-grid content-grid--2" style="align-items: start;">
-        <div class="card card--elevated">
-            <h2 style="font-size: var(--text-xl); font-weight: 700; margin-bottom: var(--space-3); padding-bottom: var(--space-3); border-bottom: 2px solid var(--border);">
-                {% trans 'Issue Title' %}: {{ complaint.title }}
-            </h2>
-            <div class="mb-4">
-                <h4 class="stat-card__label" style="margin-bottom: 0.5rem;">{% trans 'Description' %}</h4>
-                <p style="line-height: 1.7; white-space: pre-wrap;">{{ complaint.description }}</p>
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+            <div class="card card--elevated">
+                <h2 style="font-size: var(--text-xl); font-weight: 700; margin-bottom: var(--space-3); padding-bottom: var(--space-3); border-bottom: 2px solid var(--border);">
+                    {% trans 'Issue Title' %}: {{ complaint.title }}
+                </h2>
+                <div class="mb-4">
+                    <h4 class="stat-card__label" style="margin-bottom: 0.5rem;">{% trans 'Description' %}</h4>
+                    <p style="line-height: 1.7; white-space: pre-wrap;">{{ complaint.description }}</p>
+                </div>
+                {% if complaint.image %}
+                <div>
+                    <h4 class="stat-card__label" style="margin-bottom: 0.5rem;">{% trans 'Attached Evidence' %}</h4>
+                    <div style="border: 1px solid var(--border); padding: 0.5rem; border-radius: var(--radius-md); background: var(--bg);">
+                        <img src="{{ complaint.image.url }}" alt="{% trans 'Complaint Evidence' %}" style="width: 100%; height: auto; border-radius: var(--radius-md);">
+                    </div>
+                </div>
+                {% endif %}
             </div>
-            {% if complaint.image %}
-            <div>
-                <h4 class="stat-card__label" style="margin-bottom: 0.5rem;">{% trans 'Attached Evidence' %}</h4>
-                <div style="border: 1px solid var(--border); padding: 0.5rem; border-radius: var(--radius-md); background: var(--bg);">
-                    <img src="{{ complaint.image.url }}" alt="{% trans 'Complaint Evidence' %}" style="width: 100%; height: auto; border-radius: var(--radius-md);">
+
+            {% if user.is_department_admin %}
+            <div class="card card--elevated">
+                <h3 style="font-size: var(--text-base); font-weight: 700; margin-bottom: var(--space-3); display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fa-solid fa-user-tie" style="color: var(--primary);"></i>
+                    {% trans 'Complainant Details' %}
+                </h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3);">
+                    <div>
+                        <p class="stat-card__label" style="margin-bottom: 0.15rem;">{% trans 'Full Name' %}</p>
+                        <p style="font-weight: 500;">{{ complaint.user.get_full_name|default:complaint.user.username }}</p>
+                    </div>
+                    <div>
+                        <p class="stat-card__label" style="margin-bottom: 0.15rem;">{% trans 'User ID' %}</p>
+                        <p style="font-weight: 500;">#{{ complaint.user.pk }}</p>
+                    </div>
+                    <div>
+                        <p class="stat-card__label" style="margin-bottom: 0.15rem;">{% trans 'Email Address' %}</p>
+                        <p style="font-weight: 500;">{{ complaint.user.email }}</p>
+                    </div>
+                    <div>
+                        <p class="stat-card__label" style="margin-bottom: 0.15rem;">{% trans 'Phone Number' %}</p>
+                        <p style="font-weight: 500;">{{ complaint.user.phone_number|default:"Not Provided" }}</p>
+                    </div>
                 </div>
             </div>
             {% endif %}
@@ -43,10 +95,24 @@
         <div style="display: flex; flex-direction: column; gap: var(--space-4);">
             <div class="card card--elevated">
                 <h3 style="font-size: var(--text-base); font-weight: 700; margin-bottom: var(--space-3);">{% trans 'Case Summary' %}</h3>
+                
+                {% if complaint.status == 'Escalated' or complaint.is_escalated %}
+                <div style="background: rgba(220, 53, 69, 0.1); border-left: 4px solid var(--danger); padding: var(--space-3); border-radius: var(--radius-md); margin-bottom: var(--space-4);">
+                    <p style="color: var(--danger); font-weight: 700; font-size: var(--text-sm); margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fa-solid fa-triangle-exclamation"></i> {% trans 'Automatic Escalation' %}
+                    </p>
+                    <p style="font-size: var(--text-xs); line-height: 1.4;">
+                        {% trans 'This complaint has not been resolved within the expected time and has been escalated to higher authority.' %}
+                    </p>
+                </div>
+                {% endif %}
+
                 <div class="mb-3">
                     <p class="stat-card__label" style="margin-bottom: 0.25rem;">Status</p>
                     {% if complaint.status == 'Resolved' %}
                         <span class="badge badge-success" style="font-size: var(--text-sm); padding: 0.4rem 0.8rem;">Resolved</span>
+                    {% elif complaint.status == 'Escalated' %}
+                        <span class="badge" style="background: var(--danger); color: white; font-size: var(--text-sm); padding: 0.4rem 0.8rem;">Escalated</span>
                     {% elif complaint.status == 'In Progress' %}
                         <span class="badge badge-progress" style="font-size: var(--text-sm); padding: 0.4rem 0.8rem;">In Progress</span>
                     {% else %}
@@ -63,11 +129,45 @@
                         {% endfor %}
                     </div>
                 </div>
-                <div>
-                    <p class="stat-card__label" style="margin-bottom: 0.25rem;">{% trans 'Location' %}</p>
+                <div class="mb-1">
+                    <p class="stat-card__label" style="margin-bottom: 0.25rem;">{% trans 'Reported Location' %}</p>
                     <p><i class="fa-solid fa-location-dot" style="margin-right: 0.5rem; color: var(--danger);"></i>{{ complaint.location }}</p>
                 </div>
+                
+                {% if user.is_department_admin and complaint.latitude and complaint.longitude %}
+                <div id="map"></div>
+                {% endif %}
             </div>
+
+            {% if complaint.status == 'Escalated' or complaint.is_escalated %}
+            <div class="card card--elevated" style="border: 1px solid var(--danger);">
+                <h3 style="font-size: var(--text-base); font-weight: 700; margin-bottom: var(--space-3); color: var(--danger); display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fa-solid fa-user-shield"></i>
+                    {% trans 'Higher Authority Contact' %}
+                </h3>
+                <div style="display: flex; flex-direction: column; gap: var(--space-3);">
+                    {% for d in complaint.departments.all %}
+                        {% if d.higher_authority_name %}
+                        <div class="authority-item" style="padding-bottom: var(--space-3); border-bottom: 1px solid var(--border);">
+                            <p class="stat-card__label" style="margin-bottom: 0.15rem;">{{ d.name }} - {{ d.higher_authority_designation|default:"Higher Authority" }}</p>
+                            <p style="font-weight: 600; margin-bottom: 0.25rem;">{{ d.higher_authority_name }}</p>
+                            <div style="font-size: var(--text-sm); display: flex; flex-direction: column; gap: 0.15rem;">
+                                <span><i class="fa-solid fa-phone" style="width: 1.2rem;"></i> {{ d.higher_authority_phone|default:"N/A" }}</span>
+                                <span><i class="fa-solid fa-envelope" style="width: 1.2rem;"></i> {{ d.higher_authority_email|default:"N/A" }}</span>
+                            </div>
+                        </div>
+                        {% elif d.higher_authority_contact %}
+                        <div class="authority-item" style="padding-bottom: var(--space-3); border-bottom: 1px solid var(--border);">
+                            <p class="stat-card__label" style="margin-bottom: 0.15rem;">{{ d.name }} - {% trans 'Higher Authority' %}</p>
+                            <p style="white-space: pre-wrap; font-size: var(--text-sm);">{{ d.higher_authority_contact }}</p>
+                        </div>
+                        {% endif %}
+                    {% empty %}
+                        <p class="small text-muted">{% trans 'Authority details will be available shortly.' %}</p>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
 
             {% if user.is_department_admin %}
             <div class="card" style="background: var(--bg);">
@@ -84,9 +184,37 @@
                     </div>
                     <button type="submit" class="btn btn-primary btn-block">{% trans 'Apply Update' %}</button>
                 </form>
+                {% if user.is_superuser %}
+                <div style="margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px solid var(--border);">
+                    <form method="post" action="{% url 'delete_complaint' complaint.pk %}" onsubmit="return confirm('Are you sure you want to delete this complaint? This action cannot be undone.');">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-block" style="background: var(--danger-color); color: white;">
+                            <i class="fa-solid fa-trash-can" style="margin-right: 0.5rem;"></i> {% trans 'Delete Complaint' %}
+                        </button>
+                    </form>
+                </div>
+                {% endif %}
             </div>
             {% endif %}
         </div>
     </div>
 </div>
+
+{% if user.is_department_admin and complaint.latitude and complaint.longitude %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const lat = {{ complaint.latitude|default:"null" }};
+        const lng = {{ complaint.longitude|default:"null" }};
+        const map = L.map('map').setView([lat, lng], 15);
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+        
+        L.marker([lat, lng]).addTo(map)
+            .bindPopup('<b>{% trans "Complaint Location" %}</b><br>{{ complaint.location|escapejs }}')
+            .openPopup();
+    });
+</script>
+{% endif %}
 {% endblock %}

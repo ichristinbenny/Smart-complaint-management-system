@@ -9,10 +9,13 @@ urlpatterns = [
     path('admins/', views.manage_admins, name='manage_admins'),
     path('admins/add/', views.add_admin, name='add_admin'),
     path('users/toggle-status/<int:user_id>/', views.toggle_user_status, name='toggle_user_status'),
+    path('users/delete/<int:user_id>/', views.delete_user, name='delete_user'),
     
     # Complaint Management
     path('complaints/', views.complaints_admin, name='complaints_admin'),
     path('complaints/update/<int:pk>/', views.admin_update_complaint, name='admin_update_complaint'),
+    path('complaints/delete/<int:pk>/', views.delete_complaint, name='delete_complaint'),
+    path('complaints/bulk-delete/', views.bulk_delete_complaints, name='bulk_delete_complaints'),
     
     # Department Management
     path('departments/', views.departments_admin, name='departments_admin'),

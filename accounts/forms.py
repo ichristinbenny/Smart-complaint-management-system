@@ -6,7 +6,7 @@ from complaints.models import Department
 class CitizenRegistrationForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ['username', 'email', 'first_name', 'last_name']
+        fields = ['username', 'email', 'first_name', 'last_name', 'phone_number']
 
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -20,7 +20,7 @@ class DepartmentAdminCreationForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'first_name', 'last_name', 'department']
+        fields = ['username', 'email', 'first_name', 'last_name', 'phone_number', 'department']
 
     def save(self, commit=True):
         user = super().save(commit=False)

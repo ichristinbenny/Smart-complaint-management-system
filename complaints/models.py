@@ -5,7 +5,15 @@ from django.utils import timezone
 class Department(models.Model):
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True)
-    higher_authority_contact = models.TextField(help_text="Contact info for higher authority if complaint is overdue")
+    authority_name = models.CharField(max_length=150, blank=True, null=True)
+    authority_phone = models.CharField(max_length=15, blank=True, null=True)
+    authority_email = models.EmailField(blank=True, null=True)
+    authority_designation = models.CharField(max_length=150, blank=True, null=True)
+    higher_authority_name = models.CharField(max_length=150, blank=True, null=True)
+    higher_authority_phone = models.CharField(max_length=15, blank=True, null=True)
+    higher_authority_email = models.EmailField(blank=True, null=True)
+    higher_authority_designation = models.CharField(max_length=150, blank=True, null=True)
+    higher_authority_contact = models.TextField(help_text="Contact info for higher authority if complaint is overdue", blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -14,18 +22,20 @@ class Complaint(models.Model):
     PRIORITY_CHOICES = [
         ('Normal', 'Normal'),
         ('Emergency', 'Emergency (High Priority)'),
-        ('Escalated', 'Escalated'),
     ]
     STATUS_CHOICES = [
         ('Pending', 'Pending'),
         ('In Progress', 'In Progress'),
         ('Resolved', 'Resolved'),
+        ('Escalated', 'Escalated'),
     ]
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     description = models.TextField()
     location = models.CharField(max_length=255)
+    latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     image = models.ImageField(upload_to='complaints/', blank=True, null=True)
     departments = models.ManyToManyField(Department, blank=True)
     priority = models.CharField(max_length=20, choices=PRIORITY_CHOICES, default='Normal')
@@ -37,26 +47,37 @@ class Complaint(models.Model):
     def update_escalation_status(self):
         """
         Evaluates and updates the complaint's escalation/overdue status based on time passed.
-        This provides a single source of truth for all views (citizen, department admin, superadmin).
+        - Emergency: Escalates after 24 hours.
+        - Normal: Escalates after 3 days.
         """
         now = timezone.now()
-        was_escalated = self.is_escalated
+        time_passed = (now - self.created_at).total_seconds()
+        should_escalate = False
         
         if self.status != 'Resolved':
             if self.priority == 'Emergency':
-                # Escalate emergency after 24 hours
-                if (now - self.created_at).total_seconds() > 86400:
-                    self.is_escalated = True
+                if time_passed > 86400: # 24 hours
+                    should_escalate = True
+            else: # Normal
+                if time_passed > 259200: # 3 days (3 * 86400)
+                    should_escalate = True
         
-        if self.is_escalated != was_escalated:
-            self.save(update_fields=['is_escalated'])
+        if should_escalate:
+            updates = []
+            if not self.is_escalated:
+                self.is_escalated = True
+                updates.append('is_escalated')
+            if self.status != 'Escalated':
+                self.status = 'Escalated'
+                updates.append('status')
+            
+            if updates:
+                self.save(update_fields=updates)
 
     @property
     def is_overdue(self):
-        """Returns True if the complaint is older than 7 days and not resolved."""
-        if self.status != 'Resolved' and self.priority != 'Emergency':
-            return (timezone.now() - self.created_at).days > 7
-        return False
+        """Returns True if the complaint is considered escalated/overdue."""
+        return self.status == 'Escalated' or self.is_escalated
 
     def __str__(self):
         return f"{self.title} - {self.status}"

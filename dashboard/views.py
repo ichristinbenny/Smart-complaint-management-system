@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import user_passes_test
 from complaints.models import Complaint, Department
 from django.db.models import Count
@@ -49,6 +50,23 @@ def toggle_user_status(request, user_id):
         user.save()
         status = "activated" if user.is_active else "suspended"
         messages.success(request, f"User {user.username} has been {status}.")
+    return redirect('manage_users')
+
+@superadmin_required
+@require_POST
+def delete_user(request, user_id):
+    user_to_delete = get_object_or_404(User, id=user_id)
+    if user_to_delete == request.user:
+        messages.error(request, "You cannot delete your own account.")
+    elif user_to_delete.is_superuser:
+        messages.error(request, "Cannot delete a superuser account.")
+    else:
+        username = user_to_delete.username
+        is_admin = user_to_delete.is_department_admin
+        user_to_delete.delete()
+        messages.success(request, f"User {username} has been permanently deleted.")
+        if is_admin:
+            return redirect('manage_admins')
     return redirect('manage_users')
 
 @superadmin_required
@@ -159,8 +177,26 @@ def delete_department(request, pk):
     if request.method == 'POST':
         dept = get_object_or_404(Department, pk=pk)
         name = dept.name
-        # The user wants to cleanup, so we delete even if complaints exist (they should be migrated or handled)
-        # However, for safety, let's just delete the associations automatically by Django
         dept.delete()
         messages.success(request, f"Department '{name}' deleted successfully.")
     return redirect('departments_admin')
+
+@superadmin_required
+@require_POST
+def delete_complaint(request, pk):
+    complaint = get_object_or_404(Complaint, pk=pk)
+    complaint.delete()
+    messages.success(request, f"Complaint #{pk} has been deleted successfully.")
+    return redirect('complaints_admin')
+
+@superadmin_required
+@require_POST
+def bulk_delete_complaints(request):
+    complaint_ids = request.POST.getlist('selected_complaints')
+    if complaint_ids:
+        count = Complaint.objects.filter(id__in=complaint_ids).count()
+        Complaint.objects.filter(id__in=complaint_ids).delete()
+        messages.success(request, f"Successfully deleted {count} complaints.")
+    else:
+        messages.warning(request, "No complaints were selected.")
+    return redirect('complaints_admin')
