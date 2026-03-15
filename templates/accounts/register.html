@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+<div class="form-page">
+    <div class="form-card card--elevated">
+        <div class="form-card__header">
+            <div class="form-card__icon" style="color: var(--success);">
+                <i class="fa-solid fa-user-plus"></i>
+            </div>
+            <h2 class="form-card__title">{% trans 'Citizen Registration' %}</h2>
+            <p class="form-card__subtitle">{% trans 'Create an account to report issues in your locality.' %}</p>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+            <div class="alert-error">
+                {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}
+                <span class="form-hint">{{ field.help_text }}</span>
+                {% endif %}
+                {% if field.errors %}
+                <span class="form-error">{{ field.errors.0 }}</span>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            <button type="submit" class="btn btn-success btn-block">{% trans 'Create Account' %}</button>
+        </form>
+
+        <div class="form-card__footer">
+            <p class="small text-muted mb-2">{% trans 'Already have an account?' %}</p>
+            <a href="{% url 'login' %}" class="btn btn-secondary btn-block">{% trans 'Sign In Instead' %}</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

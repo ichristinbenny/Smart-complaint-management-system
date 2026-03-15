@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+<div class="form-page" style="max-width: 900px;">
+    <div class="page-header mb-4">
+        <div>
+            <h1 class="page-header__title">{% trans 'Complaint' %} #{{ complaint.pk }}</h1>
+            <p class="page-header__subtitle">{% trans 'Submitted on' %} {{ complaint.created_at|date:"F d, Y at H:i" }}</p>
+        </div>
+        <div>
+            {% if user.is_department_admin %}
+                <a href="{% url 'department_complaints' %}" class="btn btn-secondary">
+                    <i class="fa-solid fa-arrow-left"></i> {% trans 'Back to List' %}
+                </a>
+            {% else %}
+                <a href="{% url 'my_complaints' %}" class="btn btn-secondary">
+                    <i class="fa-solid fa-arrow-left"></i> {% trans 'Back to My Reports' %}
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="content-grid content-grid--2" style="align-items: start;">
+        <div class="card card--elevated">
+            <h2 style="font-size: var(--text-xl); font-weight: 700; margin-bottom: var(--space-3); padding-bottom: var(--space-3); border-bottom: 2px solid var(--border);">
+                {% trans 'Issue Title' %}: {{ complaint.title }}
+            </h2>
+            <div class="mb-4">
+                <h4 class="stat-card__label" style="margin-bottom: 0.5rem;">{% trans 'Description' %}</h4>
+                <p style="line-height: 1.7; white-space: pre-wrap;">{{ complaint.description }}</p>
+            </div>
+            {% if complaint.image %}
+            <div>
+                <h4 class="stat-card__label" style="margin-bottom: 0.5rem;">{% trans 'Attached Evidence' %}</h4>
+                <div style="border: 1px solid var(--border); padding: 0.5rem; border-radius: var(--radius-md); background: var(--bg);">
+                    <img src="{{ complaint.image.url }}" alt="{% trans 'Complaint Evidence' %}" style="width: 100%; height: auto; border-radius: var(--radius-md);">
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+            <div class="card card--elevated">
+                <h3 style="font-size: var(--text-base); font-weight: 700; margin-bottom: var(--space-3);">{% trans 'Case Summary' %}</h3>
+                <div class="mb-3">
+                    <p class="stat-card__label" style="margin-bottom: 0.25rem;">Status</p>
+                    {% if complaint.status == 'Resolved' %}
+                        <span class="badge badge-success" style="font-size: var(--text-sm); padding: 0.4rem 0.8rem;">Resolved</span>
+                    {% elif complaint.status == 'In Progress' %}
+                        <span class="badge badge-progress" style="font-size: var(--text-sm); padding: 0.4rem 0.8rem;">In Progress</span>
+                    {% else %}
+                        <span class="badge badge-pending" style="font-size: var(--text-sm); padding: 0.4rem 0.8rem;">Pending</span>
+                    {% endif %}
+                </div>
+                <div class="mb-3">
+                    <p class="stat-card__label" style="margin-bottom: 0.25rem;">{% trans 'Assigned Departments' %}</p>
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.25rem;">
+                        {% for d in complaint.departments.all %}
+                            <span class="badge badge-progress">{{ d.name }}</span>
+                        {% empty %}
+                            <span class="small text-muted" style="font-style: italic;">{% trans 'Processing...' %}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div>
+                    <p class="stat-card__label" style="margin-bottom: 0.25rem;">{% trans 'Location' %}</p>
+                    <p><i class="fa-solid fa-location-dot" style="margin-right: 0.5rem; color: var(--danger);"></i>{{ complaint.location }}</p>
+                </div>
+            </div>
+
+            {% if user.is_department_admin %}
+            <div class="card" style="background: var(--bg);">
+                <h3 style="font-size: var(--text-base); font-weight: 700; margin-bottom: var(--space-3);">{% trans 'Admin Actions' %}</h3>
+                <form method="post" action="{% url 'update_complaint_status' complaint.pk %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label>{% trans 'Update Status' %}</label>
+                        <select name="status" style="font-size: var(--text-sm);">
+                            <option value="Pending" {% if complaint.status == 'Pending' %}selected{% endif %}>Pending</option>
+                            <option value="In Progress" {% if complaint.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                            <option value="Resolved" {% if complaint.status == 'Resolved' %}selected{% endif %}>Resolved</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">{% trans 'Apply Update' %}</button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+<div class="form-page form-page--wide">
+    <div class="page-header mb-4">
+        <h2 class="page-header__title">
+            <i class="fa-solid fa-file-signature" style="color: var(--primary); margin-right: 0.5rem;"></i>
+            {% trans 'Lodge a Complaint' %}
+        </h2>
+        <a href="{% url 'home' %}" class="btn btn-secondary">
+            <i class="fa-solid fa-arrow-left"></i> {% trans 'Back' %}
+        </a>
+    </div>
+
+    <div class="form-card card--elevated">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+            <div class="alert-error">
+                {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="form-group">
+                <label for="{{ form.title.id_for_label }}">{% trans 'Complaint Title' %}</label>
+                {{ form.title }}
+                <span class="form-hint">{% trans 'Briefly describe the issue (e.g., "Broken street light near Central Park").' %}</span>
+                {% if form.title.errors %}
+                <span class="form-error">{{ form.title.errors.0 }}</span>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.description.id_for_label }}">{% trans 'Detailed Description' %}</label>
+                {{ form.description }}
+                {% if form.description.errors %}
+                <span class="form-error">{{ form.description.errors.0 }}</span>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.location.id_for_label }}">{% trans 'Location / Address' %}</label>
+                {{ form.location }}
+                {% if form.location.errors %}
+                <span class="form-error">{{ form.location.errors.0 }}</span>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.image.id_for_label }}">{% trans 'Upload Photo (Optional)' %}</label>
+                <div class="upload-zone">
+                    {{ form.image }}
+                    <p class="form-hint mt-2">{% trans 'Supported formats: JPG, PNG. Max size: 5MB.' %}</p>
+                </div>
+                {% if form.image.errors %}
+                <span class="form-error">{{ form.image.errors.0 }}</span>
+                {% endif %}
+            </div>
+
+            <div style="margin-top: var(--space-5); padding-top: var(--space-4); border-top: 1px solid var(--border);">
+                <button type="submit" class="btn btn-primary btn-block">
+                    {% trans 'Submit Official Complaint' %}
+                </button>
+                <p class="form-hint mt-3">{% trans 'By submitting, you agree that the information provided is accurate and truthful.' %}</p>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

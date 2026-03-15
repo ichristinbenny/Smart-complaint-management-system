@@ -1,0 +1,35 @@
+{% extends 'dashboard/dashboard_base.html' %}
+
+{% block admin_content %}
+<div class="flex-between mb-4">
+    <div>
+        <h1 style="font-size: 1.75rem; font-weight: 700;">Authority Management</h1>
+        <p style="color: var(--text-muted); font-size: 0.875rem;">Manage higher authority contacts and escalation protocols.</p>
+    </div>
+</div>
+
+<div class="grid-2">
+    {% for d in departments %}
+    <div class="card">
+        <div class="flex-between mb-3">
+            <h3 style="font-size: 1.125rem; font-weight: 700; margin: 0;">{{ d.name }}</h3>
+            <span class="badge badge-success">Active Protocol</span>
+        </div>
+        
+        <div style="margin-bottom: var(--space-4);">
+            <p style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem;">Higher Authority Liaison</p>
+            <div style="background: #f8fafc; padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); font-family: monospace; font-size: 0.875rem; white-space: pre-wrap;">{{ d.higher_authority_contact }}</div>
+        </div>
+
+        <div style="display: flex; gap: var(--space-2);">
+            <a href="{% url 'edit_department' d.pk %}" class="btn btn-secondary btn-sm" style="flex: 1;">
+                <i class="fa-solid fa-pen-to-square"></i> Update Liaison
+            </a>
+            <button class="btn btn-secondary btn-sm" style="flex: 1;" onclick="alert('System alert: Higher authority notification sent for {{ d.name }}.')">
+                <i class="fa-solid fa-bell"></i> Test Trigger
+            </button>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

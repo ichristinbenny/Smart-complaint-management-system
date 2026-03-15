@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block extra_head %}
+{% endblock %}
+
+{% block content %}
+<div class="admin-overlay" id="admin-overlay" aria-hidden="true"></div>
+<div class="admin-wrapper">
+    <aside class="admin-sidebar" id="admin-sidebar" aria-label="Admin navigation">
+        <a href="{% url 'admin_dashboard' %}" class="sidebar-link {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
+            <i class="fa-solid fa-chart-pie"></i> Dashboard
+        </a>
+        <a href="{% url 'complaints_admin' %}" class="sidebar-link {% if request.resolver_match.url_name == 'complaints_admin' %}active{% endif %}">
+            <i class="fa-solid fa-list-check"></i> Complaints
+        </a>
+        <a href="{% url 'departments_admin' %}" class="sidebar-link {% if request.resolver_match.url_name == 'departments_admin' or request.resolver_match.url_name == 'add_department' or request.resolver_match.url_name == 'edit_department' %}active{% endif %}">
+            <i class="fa-solid fa-building"></i> Departments
+        </a>
+        <a href="{% url 'manage_users' %}" class="sidebar-link {% if request.resolver_match.url_name == 'manage_users' %}active{% endif %}">
+            <i class="fa-solid fa-users"></i> Users
+        </a>
+        <a href="{% url 'manage_admins' %}" class="sidebar-link {% if request.resolver_match.url_name == 'manage_admins' or request.resolver_match.url_name == 'add_admin' %}active{% endif %}">
+            <i class="fa-solid fa-user-shield"></i> Admins
+        </a>
+        <a href="{% url 'authorities_admin' %}" class="sidebar-link {% if request.resolver_match.url_name == 'authorities_admin' %}active{% endif %}">
+            <i class="fa-solid fa-gavel"></i> Authorities
+        </a>
+        <div class="admin-sidebar-footer">
+            <a href="{% url 'settings_admin' %}" class="sidebar-link {% if request.resolver_match.url_name == 'settings_admin' %}active{% endif %}">
+                <i class="fa-solid fa-gear"></i> System Settings
+            </a>
+        </div>
+    </aside>
+
+    <main class="admin-content">
+        <button type="button" class="admin-toggle" id="admin-toggle" aria-label="Open admin menu" aria-expanded="false">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+        {% block admin_content %}{% endblock %}
+    </main>
+</div>
+<script>
+(function() {
+    var toggle = document.getElementById('admin-toggle');
+    var sidebar = document.getElementById('admin-sidebar');
+    var overlay = document.getElementById('admin-overlay');
+    function openSidebar() {
+        if (sidebar) sidebar.classList.add('is-open');
+        if (overlay) overlay.classList.add('is-open');
+        if (toggle) { toggle.setAttribute('aria-expanded', 'true'); toggle.setAttribute('aria-label', 'Close admin menu'); }
+        document.body.style.overflow = 'hidden';
+    }
+    function closeSidebar() {
+        if (sidebar) sidebar.classList.remove('is-open');
+        if (overlay) overlay.classList.remove('is-open');
+        if (toggle) { toggle.setAttribute('aria-expanded', 'false'); toggle.setAttribute('aria-label', 'Open admin menu'); }
+        document.body.style.overflow = '';
+    }
+    if (toggle) toggle.addEventListener('click', function() { (sidebar && sidebar.classList.contains('is-open')) ? closeSidebar() : openSidebar(); });
+    if (overlay) overlay.addEventListener('click', closeSidebar);
+})();
+</script>
+{% endblock %}

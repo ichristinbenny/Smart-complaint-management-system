@@ -1,0 +1,96 @@
+{% extends 'dashboard/dashboard_base.html' %}
+
+{% block admin_content %}
+<div class="page-header mb-4">
+    <div>
+        <h1 class="page-header__title">System Overview</h1>
+        <p class="page-header__subtitle">Real-time metrics for the Smart Complaint System.</p>
+    </div>
+</div>
+
+<div class="stat-cards">
+    <div class="stat-card stat-card--primary">
+        <p class="stat-card__label">Complaints</p>
+        <p class="stat-card__value">{{ total_complaints }}</p>
+    </div>
+    <div class="stat-card stat-card--pending">
+        <p class="stat-card__label">Pending</p>
+        <p class="stat-card__value">{{ pending_complaints }}</p>
+    </div>
+    <div class="stat-card stat-card--progress">
+        <p class="stat-card__label">In Progress</p>
+        <p class="stat-card__value">{{ in_progress_complaints }}</p>
+    </div>
+    <div class="stat-card stat-card--resolved">
+        <p class="stat-card__label">Resolved</p>
+        <p class="stat-card__value">{{ resolved_complaints }}</p>
+    </div>
+</div>
+
+<div class="content-grid content-grid--2 mb-4">
+    <div class="card card--elevated">
+        <h3 class="mb-3" style="font-size: var(--text-lg); font-weight: 700;">Infrastructure Health</h3>
+        <div style="display: flex; flex-wrap: wrap; gap: var(--space-5);">
+            <div>
+                <p class="stat-card__label">Total Departments</p>
+                <div style="font-size: var(--text-2xl); font-weight: 700;">{{ total_departments }}</div>
+            </div>
+            <div>
+                <p class="stat-card__label">Registered Users</p>
+                <div style="font-size: var(--text-2xl); font-weight: 700;">{{ total_users }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="card card--elevated">
+        <h3 style="font-size: var(--text-lg); font-weight: 700; color: var(--danger); margin-bottom: var(--space-3);">
+            <i class="fa-solid fa-triangle-exclamation"></i> Critical Alerts
+        </h3>
+        <p class="small text-muted mb-3">{{ escalated_complaints }} complaint(s) require immediate attention due to escalation.</p>
+        <a href="{% url 'complaints_admin' %}?status=Escalated" class="btn btn-secondary">Review Escalations</a>
+    </div>
+</div>
+
+<div class="card card--no-padding card--elevated">
+    <div class="card-header">
+        <h3 style="font-size: var(--text-base); font-weight: 700; margin: 0;">Recent Applications</h3>
+        <a href="{% url 'complaints_admin' %}" class="btn btn-secondary" style="font-size: var(--text-sm);">View All</a>
+    </div>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Issue</th>
+                    <th>Dept</th>
+                    <th style="text-align: center;">Status</th>
+                    <th style="text-align: right;">Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in recent_complaints %}
+                <tr>
+                    <td data-label="Issue">
+                        <div style="font-weight: 600;">{{ c.title }}</div>
+                        <div class="small text-muted">By {{ c.user.username }}</div>
+                    </td>
+                    <td data-label="Dept">
+                        {% for d in c.departments.all %}
+                            {{ d.name }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td data-label="Status" style="text-align: center;">
+                        {% if c.status == 'Resolved' %}
+                            <span class="badge badge-success">Resolved</span>
+                        {% elif c.status == 'In Progress' %}
+                            <span class="badge badge-progress">In Progress</span>
+                        {% else %}
+                            <span class="badge badge-pending">Pending</span>
+                        {% endif %}
+                    </td>
+                    <td data-label="Date" style="text-align: right;">{{ c.created_at|date:"M d" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 2rem auto;">
+    <div class="flex-between mb-4">
+        <h2 style="font-size: 1.75rem; font-weight: 700;">Register Department Admin</h2>
+        <a href="{% url 'manage_admins' %}" class="btn btn-secondary">
+            <i class="fa-solid fa-arrow-left" style="margin-right: 0.5rem;"></i> Back
+        </a>
+    </div>
+
+    <div class="card">
+        <form method="post">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+            <div style="background-color: #fee2e2; border: 1px solid #fecaca; color: #991b1b; padding: var(--space-3); border-radius: var(--radius-sm); margin-bottom: var(--space-4); font-size: 0.875rem;">
+                {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}
+                <small style="display: block; color: var(--text-muted); font-size: 0.75rem; margin-top: 0.25rem;">{{ field.help_text }}</small>
+                {% endif %}
+                {% if field.errors %}
+                <span style="color: var(--danger-color); font-size: 0.75rem; display: block; margin-top: 0.25rem;">{{ field.errors.0 }}</span>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            <div style="margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px solid var(--border-color);">
+                <button type="submit" class="btn btn-primary w-full" style="padding: 0.75rem; font-size: 1rem;">
+                    Create Administrator Account
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

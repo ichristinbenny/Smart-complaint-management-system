@@ -1,0 +1,32 @@
+[
+    {
+        "id": 10,
+        "name": "Electricity",
+        "num_complaints": 0,
+        "admins": []
+    },
+    {
+        "id": 13,
+        "name": "Garbage Department",
+        "num_complaints": 0,
+        "admins": []
+    },
+    {
+        "id": 14,
+        "name": "Public Safety Department",
+        "num_complaints": 0,
+        "admins": []
+    },
+    {
+        "id": 12,
+        "name": "Road & Transport Department",
+        "num_complaints": 2,
+        "admins": []
+    },
+    {
+        "id": 11,
+        "name": "Water Supply Department",
+        "num_complaints": 2,
+        "admins": []
+    }
+]

@@ -1,0 +1,64 @@
+{% extends 'dashboard/dashboard_base.html' %}
+
+{% block admin_content %}
+<div class="flex-between mb-4">
+    <div>
+        <h1 style="font-size: 1.75rem; font-weight: 700;">System Settings</h1>
+        <p style="color: var(--text-muted); font-size: 0.875rem;">Configure chatbot behavior and global system rules.</p>
+    </div>
+</div>
+
+<div class="grid-2">
+    <div class="card">
+        <h3 style="font-size: 1.125rem; font-weight: 700; margin-bottom: var(--space-4);">
+            <i class="fa-solid fa-robot" style="color: var(--primary-color);"></i> AI Assistant Config
+        </h3>
+        <div class="form-group">
+            <label>Model selection</label>
+            <select disabled>
+                <option>CityAware-GPT-V2 (Active)</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Response Sensitivity</label>
+            <input type="range" min="1" max="100" value="85" style="width: 100%;">
+            <div class="flex-between" style="font-size: 0.7rem; color: var(--text-muted);">
+                <span>Precise</span>
+                <span>Balanced</span>
+                <span>Creative</span>
+            </div>
+        </div>
+        <button class="btn btn-primary btn-sm">Update AI Rules</button>
+    </div>
+
+    <div class="card">
+        <h3 style="font-size: 1.125rem; font-weight: 700; margin-bottom: var(--space-4);">
+            <i class="fa-solid fa-bell" style="color: var(--accent-color);"></i> Notification Rules
+        </h3>
+        <div class="form-group" style="display: flex; align-items: center; justify-content: space-between;">
+            <span style="font-size: 0.875rem;">Escalate Emergency after 24h</span>
+            <input type="checkbox" checked disabled>
+        </div>
+        <div class="form-group" style="display: flex; align-items: center; justify-content: space-between;">
+            <span style="font-size: 0.875rem;">Auto-notify Authority after 7d</span>
+            <input type="checkbox" checked disabled>
+        </div>
+        <div class="form-group">
+            <label>Escalation Threshold (Days)</label>
+            <input type="number" value="7" style="width: 100%;">
+        </div>
+        <button class="btn btn-secondary btn-sm">Save Thresholds</button>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <h3 style="font-size: 1.125rem; font-weight: 700; margin-bottom: var(--space-4);">System Health</h3>
+    <div style="background: #0f172a; color: #10b981; padding: 1.5rem; border-radius: 8px; font-family: 'Courier New', Courier, monospace; font-size: 0.875rem;">
+        <div>> System Pulse: NOMINAL</div>
+        <div>> Database Connection: STABLE</div>
+        <div>> AI Integration: ONLINE [Latency: 142ms]</div>
+        <div>> Storage Usage: 14.2% / 500GB</div>
+        <div style="margin-top: 1rem; color: #94a3b8;">// City Care Management Subsystem - Build 2026.03.13</div>
+    </div>
+</div>
+{% endblock %}

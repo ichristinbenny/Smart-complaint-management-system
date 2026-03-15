@@ -1,0 +1,340 @@
+{% load static i18n %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE|default:'en' }}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}City Care - Smart Complaint Management{% endblock %}</title>
+
+    <!-- Google Fonts loaded in style.css (Plus Jakarta Sans) -->
+
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body>
+    <header class="header">
+        <div class="container">
+            <a href="{% url 'home' %}" class="logo-link"><i class="fa-solid fa-city"></i><span>{% trans 'City Care' %}</span></a>
+
+            <nav class="nav-desktop">
+                <div class="nav-links">
+                    <a href="{% url 'home' %}" class="nav-link">{% trans 'Home' %}</a>
+                    {% if user.is_authenticated %}
+                        {% if user.is_citizen %}
+                            <a href="{% url 'submit_complaint' %}" class="nav-link">{% trans 'Submit Complaint' %}</a>
+                            <a href="{% url 'my_complaints' %}" class="nav-link">{% trans 'My Complaints' %}</a>
+                        {% elif user.is_department_admin %}
+                            <a href="{% url 'department_complaints' %}" class="nav-link">{% trans 'Manage Complaints' %}</a>
+                        {% elif user.is_superuser %}
+                            <a href="{% url 'admin_dashboard' %}" class="nav-link">{% trans 'Dashboard' %}</a>
+                        {% endif %}
+                    {% endif %}
+                </div>
+                <div class="nav-actions">
+                    {% if user.is_authenticated %}
+                        <div class="notifications-wrap">
+                            <button type="button" class="notifications-trigger" id="notifications-trigger" aria-label="{% trans 'Notifications' %}" aria-expanded="false" aria-haspopup="true">
+                                <i class="fa-solid fa-bell"></i>
+                                {% if unread_notifications_count %}
+                                <span class="notifications-badge">{{ unread_notifications_count }}</span>
+                                {% endif %}
+                            </button>
+                            <div class="notifications-dropdown" id="notifications-dropdown" aria-hidden="true">
+                                <div class="notifications-dropdown__header">
+                                    <span>{% trans 'Notifications' %}</span>
+                                    {% if unread_notifications_count %}
+                                    <form action="{% url 'mark_notifications_read' %}" method="post" style="margin: 0;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="notifications-mark-read">{% trans 'Mark all read' %}</button>
+                                    </form>
+                                    {% endif %}
+                                </div>
+                                <div class="notifications-dropdown__list">
+                                    {% if recent_notifications %}
+                                        {% for n in recent_notifications %}
+                                        <a href="{% if n.complaint_id %}{% url 'complaint_detail' n.complaint_id %}{% else %}#{% endif %}" class="notifications-item {% if not n.is_read %}notifications-item--unread{% endif %}">
+                                            <span class="notifications-item__text">{{ n.message }}</span>
+                                            <span class="notifications-item__time">{{ n.created_at|timesince }} ago</span>
+                                        </a>
+                                        {% endfor %}
+                                    {% else %}
+                                        <p class="notifications-empty">{% trans 'No notifications yet.' %}</p>
+                                    {% endif %}
+                                </div>
+                                {% if user.is_citizen %}
+                                <a href="{% url 'my_complaints' %}" class="notifications-dropdown__footer">{% trans 'View all' %} →</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
+                    <form action="{% url 'set_language' %}" method="post" id="lang-form" style="margin: 0; display: flex; align-items: center;">
+                        {% csrf_token %}
+                        <input name="next" type="hidden" value="{{ request.get_full_path|default:'' }}">
+                        <input name="language" type="hidden" id="lang-input" value="">
+                        <div class="lang-switch-wrapper">
+                            <span class="small text-muted" style="font-weight: 700;">EN</span>
+                            <label class="lang-switch" title="{% trans 'Switch Language' %}">
+                                {% get_current_language as CURRENT_LANG %}
+                                <input type="checkbox" id="lang-toggle-checkbox" {% if CURRENT_LANG == 'ml' %}checked{% endif %} onchange="submitLangToggle()">
+                                <span class="lang-slider"></span>
+                            </label>
+                            <span class="small text-muted" style="font-weight: 700;">മല</span>
+                        </div>
+                    </form>
+                    {% if user.is_authenticated %}
+                        <span class="small text-muted">{% trans 'Hi' %}, {{ user.username }}</span>
+                        <form action="{% url 'logout' %}" method="post" style="margin: 0;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-secondary">{% trans 'Logout' %}</button>
+                        </form>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="nav-link">{% trans 'Login' %}</a>
+                        <a href="{% url 'register' %}" class="btn btn-primary">{% trans 'Register' %}</a>
+                    {% endif %}
+                </div>
+            </nav>
+
+            <button type="button" class="nav-toggle" id="nav-toggle" aria-label="{% trans 'Open menu' %}" aria-expanded="false">
+                <i class="fa-solid fa-bars"></i>
+                <i class="fa-solid fa-times"></i>
+            </button>
+        </div>
+
+        <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
+        <div class="nav-mobile" id="nav-mobile" aria-hidden="true">
+            <a href="{% url 'home' %}" class="nav-link">{% trans 'Home' %}</a>
+            {% if user.is_authenticated %}
+                {% if user.is_citizen %}
+                    <a href="{% url 'submit_complaint' %}" class="nav-link">{% trans 'Submit Complaint' %}</a>
+                    <a href="{% url 'my_complaints' %}" class="nav-link">{% trans 'My Complaints' %}</a>
+                {% elif user.is_department_admin %}
+                    <a href="{% url 'department_complaints' %}" class="nav-link">{% trans 'Manage Complaints' %}</a>
+                {% elif user.is_superuser %}
+                    <a href="{% url 'admin_dashboard' %}" class="nav-link">{% trans 'Dashboard' %}</a>
+                {% endif %}
+            {% endif %}
+            <div class="nav-actions">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'my_complaints' %}" class="nav-link" style="display: inline-flex; align-items: center; gap: 0.5rem;">
+                        <i class="fa-solid fa-bell"></i>
+                        {% trans 'Notifications' %}
+                        {% if unread_notifications_count %}
+                        <span class="notifications-badge">{{ unread_notifications_count }}</span>
+                        {% endif %}
+                    </a>
+                {% endif %}
+                <form action="{% url 'set_language' %}" method="post" class="lang-form-mobile" style="margin: 0;">
+                    {% csrf_token %}
+                    <input name="next" type="hidden" value="{{ request.get_full_path|default:'' }}">
+                    <input name="language" type="hidden" id="lang-input-mobile" value="">
+                    <div class="lang-switch-wrapper">
+                        <span class="small text-muted" style="font-weight: 700;">EN</span>
+                        <label class="lang-switch">
+                            {% get_current_language as CURRENT_LANG %}
+                            <input type="checkbox" id="lang-toggle-mobile" {% if CURRENT_LANG == 'ml' %}checked{% endif %} onchange="submitLangToggleMobile()">
+                            <span class="lang-slider"></span>
+                        </label>
+                        <span class="small text-muted" style="font-weight: 700;">മല</span>
+                    </div>
+                </form>
+                {% if user.is_authenticated %}
+                    <span class="small text-muted">{% trans 'Hi' %}, {{ user.username }}</span>
+                    <form action="{% url 'logout' %}" method="post" style="margin: 0;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-secondary btn-block">{% trans 'Logout' %}</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-secondary btn-block">{% trans 'Login' %}</a>
+                    <a href="{% url 'register' %}" class="btn btn-primary btn-block">{% trans 'Register' %}</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            {% if messages %}
+            <div class="messages mb-4">
+                {% for message in messages %}
+                <div class="card" style="border-left: 4px solid var(--primary); padding: var(--space-3);">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% block content %}
+            {% endblock %}
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container text-center">
+            <p class="small text-muted">&copy; 2026 {% trans 'City Care - Smart City Automated Complaint Management System' %}</p>
+        </div>
+    </footer>
+
+    {% if user.is_authenticated and user.is_citizen %}
+    <button class="ai-chatbot-button" title="Ask City Care AI" id="ai-chatbot-toggle">
+        <i class="fa-solid fa-robot"></i>
+    </button>
+
+    <div class="ai-chatbot-panel" id="ai-chatbot-panel">
+        <div class="ai-chatbot-header">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fa-solid fa-robot"></i>
+                <span style="font-weight: 600;">{% trans 'City Care Assistant' %}</span>
+            </div>
+            <button type="button" id="ai-chatbot-close" style="background: none; border: none; color: white; cursor: pointer; font-size: 1.25rem;">&times;</button>
+        </div>
+        <div class="ai-chatbot-messages" id="ai-chatbot-messages">
+            <div class="ai-chatbot-message bot">
+                {% trans 'Hi' %} {{ user.username }}, {% trans "I'm your assistant. How can I help you today?" %}
+            </div>
+        </div>
+        <form class="ai-chatbot-input-row" id="ai-chatbot-form">
+            {% csrf_token %}
+            <input type="text" id="ai-chatbot-input" placeholder="{% trans 'Type your message...' %}" autocomplete="off" style="flex: 1; min-width: 0;">
+            <button type="submit" class="btn btn-primary" style="padding: 0.5rem;"><i class="fa-solid fa-paper-plane"></i></button>
+        </form>
+    </div>
+    {% endif %}
+
+    <script>
+        function submitLangToggle() {
+            var checkbox = document.getElementById('lang-toggle-checkbox');
+            var input = document.getElementById('lang-input');
+            var form = document.getElementById('lang-form');
+            if (checkbox && input && form) { input.value = checkbox.checked ? 'ml' : 'en'; form.submit(); }
+        }
+        function submitLangToggleMobile() {
+            var checkbox = document.getElementById('lang-toggle-mobile');
+            var form = checkbox && checkbox.closest('form');
+            var input = form && form.querySelector('input[name="language"]');
+            if (checkbox && form && input) { input.value = checkbox.checked ? 'ml' : 'en'; form.submit(); }
+        }
+        (function() {
+            var toggle = document.getElementById('nav-toggle');
+            var overlay = document.getElementById('nav-overlay');
+            var mobileNav = document.getElementById('nav-mobile');
+            function openNav() {
+                if (mobileNav) mobileNav.classList.add('is-open');
+                if (overlay) overlay.classList.add('is-open');
+                if (toggle) { toggle.setAttribute('aria-expanded', 'true'); toggle.setAttribute('aria-label', '{% trans "Close menu" %}'); }
+                document.body.style.overflow = 'hidden';
+            }
+            function closeNav() {
+                if (mobileNav) mobileNav.classList.remove('is-open');
+                if (overlay) overlay.classList.remove('is-open');
+                if (toggle) { toggle.setAttribute('aria-expanded', 'false'); toggle.setAttribute('aria-label', '{% trans "Open menu" %}'); }
+                document.body.style.overflow = '';
+            }
+            if (toggle) toggle.addEventListener('click', function() { (mobileNav && mobileNav.classList.contains('is-open')) ? closeNav() : openNav(); });
+            if (overlay) overlay.addEventListener('click', closeNav);
+        })();
+
+        (function() {
+            var notifTrigger = document.getElementById('notifications-trigger');
+            var notifDropdown = document.getElementById('notifications-dropdown');
+            if (!notifTrigger || !notifDropdown) return;
+            function openNotif() {
+                notifDropdown.classList.add('is-open');
+                notifTrigger.setAttribute('aria-expanded', 'true');
+            }
+            function closeNotif() {
+                notifDropdown.classList.remove('is-open');
+                notifTrigger.setAttribute('aria-expanded', 'false');
+            }
+            notifTrigger.addEventListener('click', function(e) {
+                e.stopPropagation();
+                notifDropdown.classList.contains('is-open') ? closeNotif() : openNotif();
+            });
+            document.addEventListener('click', function() { closeNotif(); });
+            notifDropdown.addEventListener('click', function(e) { e.stopPropagation(); });
+        })();
+
+        (function () {
+            // Chatbot Logic
+            const panel = document.getElementById('ai-chatbot-panel');
+            const toggle = document.getElementById('ai-chatbot-toggle');
+            const closeBtn = document.getElementById('ai-chatbot-close');
+            const form = document.getElementById('ai-chatbot-form');
+            const input = document.getElementById('ai-chatbot-input');
+            const messages = document.getElementById('ai-chatbot-messages');
+
+            if (!toggle || !panel || !form) return;
+
+            function appendMessage(text, sender) {
+                const div = document.createElement('div');
+                div.className = 'ai-chatbot-message ' + sender;
+                div.innerText = text;
+                messages.appendChild(div);
+                messages.scrollTop = messages.scrollHeight;
+            }
+
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+
+            toggle.addEventListener('click', function () {
+                panel.classList.toggle('open');
+                if (panel.classList.contains('open')) {
+                    input.focus();
+                }
+            });
+
+            if (closeBtn) {
+                closeBtn.addEventListener('click', function () {
+                    panel.classList.remove('open');
+                });
+            }
+
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                const text = input.value.trim();
+                if (!text) return;
+                appendMessage(text, 'user');
+                input.value = '';
+
+                fetch("{% url 'ai_chatbot' %}", {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'),
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({ message: text })
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data && data.reply) {
+                            appendMessage(data.reply, 'bot');
+                        } else {
+                            appendMessage('Sorry, something went wrong.', 'bot');
+                        }
+                    })
+                    .catch(() => appendMessage('Sorry, I could not reach the server.', 'bot'));
+            });
+        })();
+    </script>
+</body>
+
+</html>

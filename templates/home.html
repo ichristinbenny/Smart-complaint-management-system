@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+<section class="hero">
+    <h1 class="hero__title">{% trans 'Welcome to City Care' %}</h1>
+    <p class="hero__subtitle">
+        {% trans 'Efficiently reporting and resolving community issues to build a better city together.' %}
+    </p>
+    <div class="hero__actions">
+        {% if user.is_authenticated %}
+            {% if user.is_citizen %}
+                <a href="{% url 'submit_complaint' %}" class="btn btn-primary">
+                    <i class="fa-solid fa-plus"></i> {% trans 'Report an Issue' %}
+                </a>
+                <a href="{% url 'my_complaints' %}" class="btn btn-secondary">
+                    {% trans 'Track My Reports' %}
+                </a>
+            {% elif user.is_department_admin %}
+                <a href="{% url 'department_complaints' %}" class="btn btn-primary">
+                    <i class="fa-solid fa-list-check"></i> {% trans 'Manage Complaints' %}
+                </a>
+            {% elif user.is_superuser %}
+                <a href="{% url 'admin_dashboard' %}" class="btn btn-primary">
+                    <i class="fa-solid fa-chart-line"></i> {% trans 'Admin Dashboard' %}
+                </a>
+            {% endif %}
+        {% else %}
+            <a href="{% url 'login' %}" class="btn btn-primary">{% trans 'Get Started' %}</a>
+            <a href="{% url 'register' %}" class="btn btn-secondary">{% trans 'Register Account' %}</a>
+        {% endif %}
+    </div>
+</section>
+
+<div class="feature-grid">
+    <div class="feature-card">
+        <div class="feature-card__icon feature-card__icon--primary">
+            <i class="fa-solid fa-file-pen"></i>
+        </div>
+        <h3 class="feature-card__title">{% trans 'Easy Reporting' %}</h3>
+        <p class="feature-card__text">
+            {% trans 'Quickly submit complaints about infrastructure, sanitation, or safety in your locality.' %}
+        </p>
+    </div>
+    <div class="feature-card">
+        <div class="feature-card__icon feature-card__icon--success">
+            <i class="fa-solid fa-magnifying-glass-location"></i>
+        </div>
+        <h3 class="feature-card__title">{% trans 'Real-time Tracking' %}</h3>
+        <p class="feature-card__text">
+            {% trans 'Monitor the status of your reports as they move from processing to resolution.' %}
+        </p>
+    </div>
+    <div class="feature-card">
+        <div class="feature-card__icon feature-card__icon--accent">
+            <i class="fa-solid fa-robot"></i>
+        </div>
+        <h3 class="feature-card__title">{% trans 'AI Routing' %}</h3>
+        <p class="feature-card__text">
+            {% trans 'Our automated classification system ensures your report reaches the correct department instantly.' %}
+        </p>
+    </div>
+</div>
+{% endblock %}

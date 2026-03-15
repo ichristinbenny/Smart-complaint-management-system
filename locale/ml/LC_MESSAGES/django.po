@@ -1,0 +1,276 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: City Care\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-03-13 12:30+0530\n"
+"PO-Revision-Date: 2026-03-13 12:30+0530\n"
+"Last-Translator: Antigravity\n"
+"Language-Team: Malayalam\n"
+"Language: ml\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Lodge a Complaint"
+msgstr "ഒരു പരാതി സമർപ്പിക്കുക"
+
+msgid "Back"
+msgstr "തിരികെ"
+
+msgid "Complaint Title"
+msgstr "പരാതിയുടെ തലക്കെട്ട്"
+
+msgid "Briefly describe the issue (e.g., \"Broken street light near Central Park\")."
+msgstr "പ്രശ്നത്തെക്കുറിച്ച് ചുരുക്കത്തിൽ വിവരിക്കുക (ഉദാഹരണത്തിന്, \"സെൻട്രൽ പാർക്കിന് സമീപമുള്ള തകരാറിലായ തെരുവ് വിളക്ക്\")."
+
+msgid "Detailed Description"
+msgstr "വിശദമായ വിവരണം"
+
+msgid "Location / Address"
+msgstr "സ്ഥലം / വിലാസം"
+
+msgid "Upload Photo (Optional)"
+msgstr "ഫോട്ടോ അപ്‌ലോഡ് ചെയ്യുക (വേണമെങ്കിൽ)"
+
+msgid "Supported formats: JPG, PNG. Max size: 5MB."
+msgstr "പിന്തുണയ്ക്കുന്ന ഫോർമാറ്റുകൾ: JPG, PNG. പരമാവധി സൈസ്: 5MB."
+
+msgid "Submit Official Complaint"
+msgstr "ഔദ്യോഗിക പരാതി സമർപ്പിക്കുക"
+
+msgid "By submitting, you agree that the information provided is accurate and truthful."
+msgstr "സമർപ്പിക്കുന്നതിലൂടെ, നൽകിയിരിക്കുന്ന വിവരങ്ങൾ കൃത്യവും സത്യവുമാണെന്ന് നിങ്ങൾ സമ്മതിക്കുന്നു."
+
+msgid "City Care"
+msgstr "സിറ്റി കെയർ"
+
+msgid "Home"
+msgstr "പൂമുഖം"
+
+msgid "City Care Assistant"
+msgstr "സിറ്റി കെയർ അസിസ്റ്റന്റ്"
+
+msgid "I'm your assistant. How can I help you today?"
+msgstr "ഞാൻ നിങ്ങളുടെ അസിസ്റ്റന്റാണ്. ഇന്ന് എനിക്ക് എങ്ങനെ സഹായിക്കാനാകും?"
+
+msgid "Type your message..."
+msgstr "നിങ്ങളുടെ സന്ദേശം ടൈപ്പ് ചെയ്യുക..."
+
+msgid "Sign In Instead"
+msgstr "പകരം സൈൻ ഇൻ ചെയ്യുക"
+
+msgid "Submit Complaint"
+msgstr "പരാതി സമർപ്പിക്കുക"
+
+msgid "My Complaints"
+msgstr "എന്റെ പരാതികൾ"
+
+msgid "Manage Complaints"
+msgstr "പരാതികൾ കൈകാര്യം ചെയ്യുക"
+
+msgid "Dashboard"
+msgstr "ഡാഷ്ബോർഡ്"
+
+msgid "Hi"
+msgstr "നമസ്കാരം"
+
+msgid "Logout"
+msgstr "പുറത്തുകടക്കുക"
+
+msgid "Login"
+msgstr "ലോഗിൻ"
+
+msgid "Register"
+msgstr "രജിസ്റ്റർ"
+
+msgid "Welcome to City Care"
+msgstr "സിറ്റി കെയറിലേക്ക് സ്വാഗതം"
+
+msgid "Efficiently reporting and resolving community issues to build a better city together."
+msgstr "മികച്ച നഗരം കെട്ടിപ്പടുക്കുന്നതിനായി കമ്മ്യൂണിറ്റി പ്രശ്നങ്ങൾ കാര്യക്ഷമമായി റിപ്പോർട്ട് ചെയ്യുകയും പരിഹരിക്കുകയും ചെയ്യുന്നു."
+
+msgid "Report an Issue"
+msgstr "ഒരു പ്രശ്നം റിപ്പോർട്ട് ചെയ്യുക"
+
+msgid "Track My Reports"
+msgstr "എന്റെ റിപ്പോർട്ടുകൾ ട്രാക്ക് ചെയ്യുക"
+
+msgid "Admin Dashboard"
+msgstr "അഡ്മിൻ ഡാഷ്ബോർഡ്"
+
+msgid "Get Started"
+msgstr "ആരംഭിക്കുക"
+
+msgid "Register Account"
+msgstr "അക്കൗണ്ട് രജിസ്റ്റർ ചെയ്യുക"
+
+msgid "Easy Reporting"
+msgstr "എളുപ്പത്തിലുള്ള റിപ്പോർട്ടിംഗ്"
+
+msgid "Quickly submit complaints about infrastructure, sanitation, or safety in your locality."
+msgstr "നിങ്ങളുടെ പ്രദേശത്തെ അടിസ്ഥാന സൗകര്യങ്ങൾ, ശുചിത്വം അല്ലെങ്കിൽ സുരക്ഷ എന്നിവയെക്കുറിച്ചുള്ള പരാതികൾ വേഗത്തിൽ സമർപ്പിക്കുക."
+
+msgid "Real-time Tracking"
+msgstr "തത്സമയ ട്രാക്കിംഗ്"
+
+msgid "Monitor the status of your reports as they move from processing to resolution."
+msgstr "നിങ്ങളുടെ റിപ്പോർട്ടുകളുടെ സ്റ്റാറ്റസ് പ്രോസസ്സിംഗ് മുതൽ പരിഹാരം വരെ നിരീക്ഷിക്കുക."
+
+msgid "AI Routing"
+msgstr "AI റൂട്ടിംഗ്"
+
+msgid "Our automated classification system ensures your report reaches the correct department instantly."
+msgstr "ഞങ്ങളുടെ ഓട്ടോമേറ്റഡ് ക്ലാസിഫിക്കേഷൻ സിസ്റ്റം നിങ്ങളുടെ റിപ്പോർട്ട് ഉടൻ തന്നെ ശരിയായ വകുപ്പിൽ എത്തുന്നുവെന്ന് ഉറപ്പാക്കുന്നു."
+
+msgid "City Care - Smart City Automated Complaint Management System"
+msgstr "സിറ്റി കെയർ - സ്മാർട്ട് സിറ്റി ഓട്ടോമേറ്റഡ് കംപ്ലൈന്റ് മാനേജ്മെന്റ് സിസ്റ്റം"
+
+msgid "Complaint"
+msgstr "പരാതി"
+
+msgid "Submitted on"
+msgstr "സമർപ്പിച്ചത്"
+
+msgid "Back to List"
+msgstr "പട്ടികയിലേക്ക് തിരികെ പോകുക"
+
+msgid "Back to My Reports"
+msgstr "എന്റെ റിപ്പോർട്ടുകളിലേക്ക് തിരികെ പോകുക"
+
+msgid "Issue Title"
+msgstr "വിഷയം"
+
+msgid "Description"
+msgstr "വിവരണം"
+
+msgid "Attached Evidence"
+msgstr "അറ്റാച്ചുചെയ്ത തെളിവുകൾ"
+
+msgid "Case Summary"
+msgstr "കേസ് സംഗ്രഹം"
+
+msgid "Assigned Departments"
+msgstr "നിയുക്ത വകുപ്പുകൾ"
+
+msgid "Processing..."
+msgstr "പ്രോസസ്സ് ചെയ്യുന്നു..."
+
+msgid "Location"
+msgstr "സ്ഥലം"
+
+msgid "Admin Actions"
+msgstr "അഡ്മിൻ നടപടികൾ"
+
+msgid "Update Status"
+msgstr "സ്റ്റാറ്റസ് അപ്ഡേറ്റ് ചെയ്യുക"
+
+msgid "Apply Update"
+msgstr "അപ്ഡേറ്റ് പ്രയോഗിക്കുക"
+
+msgid "Resolved"
+msgstr "പരിഹരിച്ചു"
+
+msgid "In Progress"
+msgstr "പുരോഗതിയിൽ"
+
+msgid "Pending"
+msgstr "തീർച്ചപ്പെടുത്തിയിട്ടില്ലാത്തവ"
+
+msgid "Title"
+msgstr "തലക്കെട്ട്"
+
+msgid "Department"
+msgstr "വകുപ്പ്"
+
+msgid "Status"
+msgstr "നില"
+
+msgid "Date Submitted"
+msgstr "സമർപ്പിച്ച തീയതി"
+
+msgid "Actions"
+msgstr "നടപടികൾ"
+
+msgid "View Details"
+msgstr "വിശദാംശങ്ങൾ കാണുക"
+
+msgid "No Complaints Found"
+msgstr "പരാതികളൊന്നും കണ്ടെത്തിയില്ല"
+
+msgid "You haven't submitted any complaints yet."
+msgstr "നിങ്ങൾ ഇതുവരെ പരാതികളൊന്നും സമർപ്പിച്ചിട്ടില്ല."
+
+msgid "Report an Issue Now"
+msgstr "ഇപ്പോൾ ഒരു പ്രശ്നം റിപ്പോർട്ട് ചെയ്യുക"
+
+msgid "Department Complaints"
+msgstr "വകുപ്പ് പരാതികൾ"
+
+msgid "Manage and resolve issues assigned to the"
+msgstr "നിങ്ങളുടെ വകുപ്പിന് നിയുക്തമാക്കിയ പ്രശ്നങ്ങൾ കൈകാര്യം ചെയ്യുകയും പരിഹരിക്കുകയും ചെയ്യുക."
+
+msgid "department."
+msgstr "വകുപ്പ്"
+
+msgid "Reference"
+msgstr "റഫറൻസ്"
+
+msgid "Complaint Detail"
+msgstr "പരാതി വിവരങ്ങൾ"
+
+msgid "Timeline"
+msgstr "സമയക്രമം"
+
+msgid "Received"
+msgstr "ലഭിച്ചു"
+
+msgid "Processing priority"
+msgstr "പ്രോസസ്സിംഗ് മുൻഗണന"
+
+msgid "Manage Case"
+msgstr "കേസ് കൈകാര്യം ചെയ്യുക"
+
+msgid "No complaints currently require action in your department."
+msgstr "നിങ്ങളുടെ വകുപ്പിൽ നിലവിൽ നടപടികൾ ആവശ്യമുള്ള പരാതികളൊന്നുമില്ല."
+
+msgid "Complaint Registered Successfully"
+msgstr "പരാതി വിജയകരമായി രജിസ്റ്റർ ചെയ്തു"
+
+msgid "Your request has been received and is being processed by our AI routing system. You can track its progress in your dashboard."
+msgstr "നിങ്ങളുടെ അപേക്ഷ ലഭിച്ചു, ഞങ്ങളുടെ AI റൂട്ടിംഗ് സിസ്റ്റം അത് പ്രോസസ്സ് ചെയ്യുന്നു. നിങ്ങളുടെ ഡാഷ്ബോർഡിൽ പുരോഗതി ട്രാക്ക് ചെയ്യാം."
+
+msgid "View My Dashboard"
+msgstr "എന്റെ ഡാഷ്ബോർഡ് കാണുക"
+
+msgid "Return Home"
+msgstr "തിരികെ ഹോം പേജിലേക്ക്"
+
+msgid "Account Login"
+msgstr "അക്കൗണ്ട് ലോഗിൻ"
+
+msgid "Sign in to manage your city reports."
+msgstr "നിങ്ങളുടെ നഗര റിപ്പോർട്ടുകൾ കൈകാര്യം ചെയ്യാൻ സൈൻ ഇൻ ചെയ്യുക."
+
+msgid "Sign In"
+msgstr "സൈൻ ഇൻ"
+
+msgid "Don't have an account?"
+msgstr "നിങ്ങൾക്ക് ഒരു അക്കൗണ്ട് ഇല്ലേ?"
+
+msgid "Register as Citizen"
+msgstr "പൗരനായി രജിസ്റ്റർ ചെയ്യുക"
+
+msgid "Citizen Registration"
+msgstr "പൗരന്മാരുടെ രജിസ്ട്രേഷൻ"
+
+msgid "Create an account to report issues in your locality."
+msgstr "നിങ്ങളുടെ പ്രദേശത്തെ പ്രശ്നങ്ങൾ റിപ്പോർട്ട് ചെയ്യുന്നതിന് ഒരു അക്കൗണ്ട് സൃഷ്ടിക്കുക."
+
+msgid "Create Account"
+msgstr "അക്കൗണ്ട് സൃഷ്ടിക്കുക"
+
+msgid "Already have an account?"
+msgstr "നിലവിൽ ഒരു അക്കൗണ്ട് ഉണ്ടോ?"
+
+msgid "Sign In Instead"
+msgstr "പകരം സൈൻ ഇൻ ചെയ്യുക"

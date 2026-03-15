@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="flex-between mb-5">
+    <div>
+        <h1 style="font-size: 2rem; font-weight: 700;">System Administrators</h1>
+        <p style="color: var(--text-muted);">Manage department-level access and administrative roles.</p>
+    </div>
+    <a href="{% url 'add_admin' %}" class="btn btn-primary">
+        <i class="fa-solid fa-user-plus" style="margin-right: 0.5rem;"></i> Register New Admin
+    </a>
+</div>
+
+<div class="card">
+    <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead style="background: #f8fafc; border-bottom: 2px solid var(--border-color);">
+                <tr>
+                    <th style="padding: 1rem; text-align: left; font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">Account</th>
+                    <th style="padding: 1rem; text-align: left; font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">Full Name</th>
+                    <th style="padding: 1rem; text-align: left; font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">Email</th>
+                    <th style="padding: 1rem; text-align: left; font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">Department</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for admin in admins %}
+                <tr style="border-bottom: 1px solid var(--border-color);">
+                    <td style="padding: 1rem; font-weight: 600; font-size: 0.9375rem;">{{ admin.username }}</td>
+                    <td style="padding: 1rem; font-size: 0.9375rem;">{{ admin.first_name }} {{ admin.last_name }}</td>
+                    <td style="padding: 1rem; font-size: 0.875rem; color: var(--text-muted);">{{ admin.email }}</td>
+                    <td style="padding: 1rem;">
+                        <span style="background: #f1f5f9; border: 1px solid var(--border-color); padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600;">
+                            {{ admin.department.name|default:"Super Account" }}
+                        </span>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" style="padding: 3rem; text-align: center; color: var(--text-muted);">No administrators have been registered yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div style="margin-top: var(--space-4);">
+    <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">
+        <i class="fa-solid fa-arrow-left" style="margin-right: 0.5rem;"></i> Return to Dashboard
+    </a>
+</div>
+{% endblock %}
