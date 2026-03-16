@@ -1,68 +1,102 @@
 {% extends 'dashboard/dashboard_base.html' %}
+{% load i18n %}
+
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
 
 {% block admin_content %}
 <div class="page-header mb-4">
     <div>
-        <h1 class="page-header__title">System Overview</h1>
-        <p class="page-header__subtitle">Real-time metrics for the Smart Complaint System.</p>
+        <h1 class="page-header__title">{% trans 'System Overview' %}</h1>
+        <p class="page-header__subtitle">{% trans 'Real-time metrics for the Smart Complaint System.' %}</p>
     </div>
 </div>
 
 <div class="stat-cards">
     <div class="stat-card stat-card--primary">
-        <p class="stat-card__label">Complaints</p>
+        <p class="stat-card__label">{% trans 'Complaints' %}</p>
         <p class="stat-card__value">{{ total_complaints }}</p>
     </div>
     <div class="stat-card stat-card--pending">
-        <p class="stat-card__label">Pending</p>
+        <p class="stat-card__label">{% trans 'Pending' %}</p>
         <p class="stat-card__value">{{ pending_complaints }}</p>
     </div>
     <div class="stat-card stat-card--progress">
-        <p class="stat-card__label">In Progress</p>
+        <p class="stat-card__label">{% trans 'In Progress' %}</p>
         <p class="stat-card__value">{{ in_progress_complaints }}</p>
     </div>
     <div class="stat-card stat-card--resolved">
-        <p class="stat-card__label">Resolved</p>
+        <p class="stat-card__label">{% trans 'Resolved' %}</p>
         <p class="stat-card__value">{{ resolved_complaints }}</p>
     </div>
 </div>
 
 <div class="content-grid content-grid--2 mb-4">
     <div class="card card--elevated">
-        <h3 class="mb-3" style="font-size: var(--text-lg); font-weight: 700;">Infrastructure Health</h3>
+        <h3 class="mb-3" style="font-size: var(--text-lg); font-weight: 700;">{% trans 'Infrastructure Health' %}</h3>
         <div style="display: flex; flex-wrap: wrap; gap: var(--space-5);">
             <div>
-                <p class="stat-card__label">Total Departments</p>
+                <p class="stat-card__label">{% trans 'Total Departments' %}</p>
                 <div style="font-size: var(--text-2xl); font-weight: 700;">{{ total_departments }}</div>
             </div>
             <div>
-                <p class="stat-card__label">Registered Users</p>
+                <p class="stat-card__label">{% trans 'Registered Users' %}</p>
                 <div style="font-size: var(--text-2xl); font-weight: 700;">{{ total_users }}</div>
             </div>
         </div>
     </div>
     <div class="card card--elevated">
         <h3 style="font-size: var(--text-lg); font-weight: 700; color: var(--danger); margin-bottom: var(--space-3);">
-            <i class="fa-solid fa-triangle-exclamation"></i> Critical Alerts
+            <i class="fa-solid fa-triangle-exclamation"></i> {% trans 'Critical Alerts' %}
         </h3>
-        <p class="small text-muted mb-3">{{ escalated_complaints }} complaint(s) require immediate attention due to escalation.</p>
-        <a href="{% url 'complaints_admin' %}?status=Escalated" class="btn btn-secondary">Review Escalations</a>
+        <p class="small text-muted mb-3">{% blocktrans %}{{ escalated_complaints }} complaint(s) require immediate attention due to escalation.{% endblocktrans %}</p>
+        <a href="{% url 'complaints_admin' %}?status=Escalated" class="btn btn-secondary">{% trans 'Review Escalations' %}</a>
+    </div>
+</div>
+
+<div class="page-header mb-4">
+    <div>
+        <h2 style="font-size: 1.5rem; font-weight: 700;">{% trans 'System Analytics' %}</h2>
+        <p style="color: var(--text-muted); font-size: 0.875rem;">{% trans 'Visual distribution of complaints across various parameters.' %}</p>
+    </div>
+</div>
+
+<div class="content-grid content-grid--2 mb-4">
+    <div class="card card--elevated">
+        <h3 class="mb-4" style="font-size: var(--text-base); font-weight: 700;">{% trans 'Complaints by Status' %}</h3>
+        <div style="max-height: 300px; display: flex; justify-content: center;">
+            <canvas id="statusChart"></canvas>
+        </div>
+    </div>
+    <div class="card card--elevated">
+        <h3 class="mb-4" style="font-size: var(--text-base); font-weight: 700;">{% trans 'Complaints by Priority' %}</h3>
+        <div style="max-height: 300px; display: flex; justify-content: center;">
+            <canvas id="priorityChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="card card--elevated mb-4">
+    <h3 class="mb-4" style="font-size: var(--text-base); font-weight: 700;">{% trans 'Complaints by Department' %}</h3>
+    <div style="height: 300px;">
+        <canvas id="deptChart"></canvas>
     </div>
 </div>
 
 <div class="card card--no-padding card--elevated">
     <div class="card-header">
-        <h3 style="font-size: var(--text-base); font-weight: 700; margin: 0;">Recent Applications</h3>
-        <a href="{% url 'complaints_admin' %}" class="btn btn-secondary" style="font-size: var(--text-sm);">View All</a>
+        <h3 style="font-size: var(--text-base); font-weight: 700; margin: 0;">{% trans 'Recent Applications' %}</h3>
+        <a href="{% url 'complaints_admin' %}" class="btn btn-secondary" style="font-size: var(--text-sm);">{% trans 'View All' %}</a>
     </div>
     <div class="table-wrapper">
         <table>
             <thead>
                 <tr>
-                    <th>Issue</th>
-                    <th>Dept</th>
-                    <th style="text-align: center;">Status</th>
-                    <th style="text-align: right;">Date</th>
+                    <th>{% trans 'Issue' %}</th>
+                    <th>{% trans 'Dept' %}</th>
+                    <th style="text-align: center;">{% trans 'Status' %}</th>
+                    <th style="text-align: right;">{% trans 'Date' %}</th>
                 </tr>
             </thead>
             <tbody>
@@ -70,27 +104,102 @@
                 <tr>
                     <td data-label="Issue">
                         <div style="font-weight: 600;">{{ c.title }}</div>
-                        <div class="small text-muted">By {{ c.user.username }}</div>
+                        <div class="small text-muted">{% trans 'By' %} {{ c.user.username }}</div>
                     </td>
-                    <td data-label="Dept">
+                    <td data-label="{% trans 'Dept' %}">
                         {% for d in c.departments.all %}
                             {{ d.name }}{% if not forloop.last %}, {% endif %}
                         {% endfor %}
                     </td>
-                    <td data-label="Status" style="text-align: center;">
+                    <td data-label="{% trans 'Status' %}" style="text-align: center;">
                         {% if c.status == 'Resolved' %}
-                            <span class="badge badge-success">Resolved</span>
+                            <span class="badge badge-success">{% trans 'Resolved' %}</span>
                         {% elif c.status == 'In Progress' %}
-                            <span class="badge badge-progress">In Progress</span>
+                            <span class="badge badge-progress">{% trans 'In Progress' %}</span>
                         {% else %}
-                            <span class="badge badge-pending">Pending</span>
+                            <span class="badge badge-pending">{% trans 'Pending' %}</span>
                         {% endif %}
                     </td>
-                    <td data-label="Date" style="text-align: right;">{{ c.created_at|date:"M d" }}</td>
+                    <td data-label="{% trans 'Date' %}" style="text-align: right;">{{ c.created_at|date:"M d" }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const statusData = JSON.parse('{{ chart_status_data|safe }}');
+    const priorityData = JSON.parse('{{ chart_priority_data|safe }}');
+    const deptLabels = JSON.parse('{{ chart_dept_labels|safe }}');
+    const deptValues = JSON.parse('{{ chart_dept_values|safe }}');
+
+    // Status Chart
+    new Chart(document.getElementById('statusChart'), {
+        type: 'doughnut',
+        data: {
+            labels: Object.keys(statusData),
+            datasets: [{
+                data: Object.values(statusData),
+                backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'bottom' }
+            },
+            cutout: '70%'
+        }
+    });
+
+    // Priority Chart
+    new Chart(document.getElementById('priorityChart'), {
+        type: 'pie',
+        data: {
+            labels: Object.keys(priorityData),
+            datasets: [{
+                data: Object.values(priorityData),
+                backgroundColor: ['#10b981', '#ef4444'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'bottom' }
+            }
+        }
+    });
+
+    // Department Chart
+    new Chart(document.getElementById('deptChart'), {
+        type: 'bar',
+        data: {
+            labels: deptLabels,
+            datasets: [{
+                label: 'Complaints',
+                data: deptValues,
+                backgroundColor: '#3b82f6',
+                borderRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: { beginAtZero: true, grid: { display: false } },
+                x: { grid: { display: false } }
+            },
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+});
+</script>
 {% endblock %}

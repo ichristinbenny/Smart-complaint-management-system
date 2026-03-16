@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import user_passes_test
 from complaints.models import Complaint, Department
 from django.db.models import Count
 from django.contrib import messages
+from django.utils.translation import gettext as _
 from accounts.models import User
 from accounts.forms import DepartmentAdminCreationForm
 from .decorators import superadmin_required
@@ -22,6 +23,19 @@ def admin_dashboard(request):
     recent_complaints = Complaint.objects.order_by('-created_at')[:5]
     
     escalated_complaints = Complaint.objects.filter(is_escalated=True).count()
+    
+    # Chart Data: Status Distribution
+    status_counts = Complaint.objects.values('status').annotate(total=Count('status'))
+    status_data = {item['status']: item['total'] for item in status_counts}
+    
+    # Chart Data: Department Distribution
+    dept_counts = Department.objects.annotate(total=Count('complaint')).values('name', 'total')
+    dept_labels = [item['name'] for item in dept_counts]
+    dept_values = [item['total'] for item in dept_counts]
+    
+    # Chart Data: Priority Distribution
+    priority_counts = Complaint.objects.values('priority').annotate(total=Count('priority'))
+    priority_data = {item['priority']: item['total'] for item in priority_counts}
 
     context = {
         'total_complaints': total_complaints,
@@ -32,6 +46,10 @@ def admin_dashboard(request):
         'total_departments': total_departments,
         'recent_complaints': recent_complaints,
         'escalated_complaints': escalated_complaints,
+        'chart_status_data': json.dumps(status_data),
+        'chart_dept_labels': json.dumps(dept_labels),
+        'chart_dept_values': json.dumps(dept_values),
+        'chart_priority_data': json.dumps(priority_data),
     }
     return render(request, 'dashboard/dashboard.html', context)
 
@@ -125,7 +143,7 @@ def admin_update_complaint(request, pk):
         complaint.is_escalated = is_escalated
         complaint.save()
         
-        messages.success(request, f"Complaint #{pk} updated successfully.")
+        messages.success(request, _("Complaint #%(pk)s updated successfully.") % {'pk': pk})
         return redirect('complaints_admin')
     return redirect('complaint_detail', pk=pk)
 
@@ -135,7 +153,12 @@ def departments_admin(request):
     return render(request, 'dashboard/departments_admin.html', {'departments': departments})
 
 from django.forms import modelform_factory
-DepartmentForm = modelform_factory(Department, fields=['name', 'description', 'higher_authority_contact'])
+DepartmentForm = modelform_factory(Department, fields=[
+    'name', 'description', 
+    'authority_name', 'authority_phone', 'authority_email', 'authority_designation',
+    'higher_authority_name', 'higher_authority_phone', 'higher_authority_email', 'higher_authority_designation',
+    'higher_authority_contact'
+])
 
 @superadmin_required
 def add_department(request):
@@ -143,11 +166,13 @@ def add_department(request):
         form = DepartmentForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, "Department added successfully.")
+            messages.success(request, _("Department/Authority added successfully."))
+            if 'next' in request.POST:
+                return redirect(request.POST.get('next'))
             return redirect('departments_admin')
     else:
         form = DepartmentForm()
-    return render(request, 'dashboard/add_department.html', {'form': form})
+    return render(request, 'dashboard/add_department.html', {'form': form, 'next': request.GET.get('next')})
 
 @superadmin_required
 def edit_department(request, pk):
@@ -156,11 +181,13 @@ def edit_department(request, pk):
         form = DepartmentForm(request.POST, instance=dept)
         if form.is_valid():
             form.save()
-            messages.success(request, "Department updated successfully.")
+            messages.success(request, _("Department/Authority updated successfully."))
+            if 'next' in request.POST:
+                return redirect(request.POST.get('next'))
             return redirect('departments_admin')
     else:
         form = DepartmentForm(instance=dept)
-    return render(request, 'dashboard/edit_department.html', {'form': form, 'department': dept})
+    return render(request, 'dashboard/edit_department.html', {'form': form, 'department': dept, 'next': request.GET.get('next')})
 
 @superadmin_required
 def authorities_admin(request):
@@ -178,7 +205,9 @@ def delete_department(request, pk):
         dept = get_object_or_404(Department, pk=pk)
         name = dept.name
         dept.delete()
-        messages.success(request, f"Department '{name}' deleted successfully.")
+        messages.success(request, f"Department/Authority '{name}' deleted successfully.")
+        if request.POST.get('next'):
+            return redirect(request.POST.get('next'))
     return redirect('departments_admin')
 
 @superadmin_required

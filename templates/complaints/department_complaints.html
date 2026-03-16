@@ -40,7 +40,7 @@
                     </td>
                     <td data-label="{% trans 'Timeline' %}">
                         <div>{% trans 'Received' %}: {{ c.created_at|date:"M d" }}</div>
-                        <div class="small text-muted" style="font-style: italic;">{% trans 'Processing priority' %}: {{ c.priority }}</div>
+                        <div class="small text-muted" style="font-style: italic;">{% trans 'Processing priority' %}: {{ c.get_priority_display }}</div>
                     </td>
                     <td data-label="{% trans 'Actions' %}" style="text-align: center;">
                         <a href="{% url 'complaint_detail' c.pk %}" class="btn btn-secondary">{% trans 'Manage Case' %}</a>

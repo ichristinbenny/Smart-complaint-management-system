@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
 {% block extra_head %}
 {% endblock %}
@@ -8,26 +9,26 @@
 <div class="admin-wrapper">
     <aside class="admin-sidebar" id="admin-sidebar" aria-label="Admin navigation">
         <a href="{% url 'admin_dashboard' %}" class="sidebar-link {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
-            <i class="fa-solid fa-chart-pie"></i> Dashboard
+            <i class="fa-solid fa-chart-pie"></i> {% trans 'Dashboard' %}
         </a>
         <a href="{% url 'complaints_admin' %}" class="sidebar-link {% if request.resolver_match.url_name == 'complaints_admin' %}active{% endif %}">
-            <i class="fa-solid fa-list-check"></i> Complaints
+            <i class="fa-solid fa-list-check"></i> {% trans 'Complaints' %}
         </a>
         <a href="{% url 'departments_admin' %}" class="sidebar-link {% if request.resolver_match.url_name == 'departments_admin' or request.resolver_match.url_name == 'add_department' or request.resolver_match.url_name == 'edit_department' %}active{% endif %}">
-            <i class="fa-solid fa-building"></i> Departments
+            <i class="fa-solid fa-building"></i> {% trans 'Departments' %}
         </a>
         <a href="{% url 'manage_users' %}" class="sidebar-link {% if request.resolver_match.url_name == 'manage_users' %}active{% endif %}">
-            <i class="fa-solid fa-users"></i> Users
+            <i class="fa-solid fa-users"></i> {% trans 'Users' %}
         </a>
         <a href="{% url 'manage_admins' %}" class="sidebar-link {% if request.resolver_match.url_name == 'manage_admins' or request.resolver_match.url_name == 'add_admin' %}active{% endif %}">
-            <i class="fa-solid fa-user-shield"></i> Admins
+            <i class="fa-solid fa-user-shield"></i> {% trans 'Admins' %}
         </a>
         <a href="{% url 'authorities_admin' %}" class="sidebar-link {% if request.resolver_match.url_name == 'authorities_admin' %}active{% endif %}">
-            <i class="fa-solid fa-gavel"></i> Authorities
+            <i class="fa-solid fa-gavel"></i> {% trans 'Authorities' %}
         </a>
         <div class="admin-sidebar-footer">
             <a href="{% url 'settings_admin' %}" class="sidebar-link {% if request.resolver_match.url_name == 'settings_admin' %}active{% endif %}">
-                <i class="fa-solid fa-gear"></i> System Settings
+                <i class="fa-solid fa-gear"></i> {% trans 'System Settings' %}
             </a>
         </div>
     </aside>

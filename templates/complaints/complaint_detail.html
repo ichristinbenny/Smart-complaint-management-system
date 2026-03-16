@@ -108,15 +108,23 @@
                 {% endif %}
 
                 <div class="mb-3">
-                    <p class="stat-card__label" style="margin-bottom: 0.25rem;">Status</p>
+                    <p class="stat-card__label" style="margin-bottom: 0.25rem;">{% trans 'Status' %}</p>
                     {% if complaint.status == 'Resolved' %}
-                        <span class="badge badge-success" style="font-size: var(--text-sm); padding: 0.4rem 0.8rem;">Resolved</span>
+                        <span class="badge badge-success" style="font-size: var(--text-sm); padding: 0.4rem 0.8rem;">{% trans 'Resolved' %}</span>
                     {% elif complaint.status == 'Escalated' %}
-                        <span class="badge" style="background: var(--danger); color: white; font-size: var(--text-sm); padding: 0.4rem 0.8rem;">Escalated</span>
+                        <span class="badge" style="background: var(--danger); color: white; font-size: var(--text-sm); padding: 0.4rem 0.8rem;">{% trans 'Escalated' %}</span>
                     {% elif complaint.status == 'In Progress' %}
-                        <span class="badge badge-progress" style="font-size: var(--text-sm); padding: 0.4rem 0.8rem;">In Progress</span>
+                        <span class="badge badge-progress" style="font-size: var(--text-sm); padding: 0.4rem 0.8rem;">{% trans 'In Progress' %}</span>
                     {% else %}
-                        <span class="badge badge-pending" style="font-size: var(--text-sm); padding: 0.4rem 0.8rem;">Pending</span>
+                        <span class="badge badge-pending" style="font-size: var(--text-sm); padding: 0.4rem 0.8rem;">{% trans 'Pending' %}</span>
+                    {% endif %}
+                </div>
+                <div class="mb-3">
+                    <p class="stat-card__label" style="margin-bottom: 0.25rem;">{% trans 'Priority' %}</p>
+                    {% if complaint.priority == 'Emergency' %}
+                        <span class="badge" style="background: var(--danger); color: white; font-size: var(--text-sm); padding: 0.4rem 0.8rem;">{% trans 'Emergency' %}</span>
+                    {% else %}
+                        <span class="badge badge-success" style="font-size: var(--text-sm); padding: 0.4rem 0.8rem;">{% trans 'Normal' %}</span>
                     {% endif %}
                 </div>
                 <div class="mb-3">
@@ -177,9 +185,9 @@
                     <div class="form-group">
                         <label>{% trans 'Update Status' %}</label>
                         <select name="status" style="font-size: var(--text-sm);">
-                            <option value="Pending" {% if complaint.status == 'Pending' %}selected{% endif %}>Pending</option>
-                            <option value="In Progress" {% if complaint.status == 'In Progress' %}selected{% endif %}>In Progress</option>
-                            <option value="Resolved" {% if complaint.status == 'Resolved' %}selected{% endif %}>Resolved</option>
+                            <option value="Pending" {% if complaint.status == 'Pending' %}selected{% endif %}>{% trans 'Pending' %}</option>
+                            <option value="In Progress" {% if complaint.status == 'In Progress' %}selected{% endif %}>{% trans 'In Progress' %}</option>
+                            <option value="Resolved" {% if complaint.status == 'Resolved' %}selected{% endif %}>{% trans 'Resolved' %}</option>
                         </select>
                     </div>
                     <button type="submit" class="btn btn-primary btn-block">{% trans 'Apply Update' %}</button>

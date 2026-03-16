@@ -11,8 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "Lodge a Complaint"
-msgstr "ഒരു പരാതി സമർപ്പിക്കുക"
+# Removed "Lodge a Complaint" entry as it is replaced by "Submit Complaint"
 
 msgid "Back"
 msgstr "തിരികെ"
@@ -274,3 +273,204 @@ msgstr "നിലവിൽ ഒരു അക്കൗണ്ട് ഉണ്ടോ
 
 msgid "Sign In Instead"
 msgstr "പകരം സൈൻ ഇൻ ചെയ്യുക"
+
+msgid "System Overview"
+msgstr "സിസ്റ്റം അവലോകനം"
+
+msgid "Real-time metrics for the Smart Complaint System."
+msgstr "സ്മാർട്ട് കംപ്ലയിന്റ് സിസ്റ്റത്തിനായുള്ള തത്സമയ അളവുകൾ."
+
+msgid "Complaints"
+msgstr "പരാതികൾ"
+
+msgid "Pending"
+msgstr "ബാക്കിയുള്ളവ"
+
+msgid "In Progress"
+msgstr "നടന്നുകൊണ്ടിരിക്കുന്നു"
+
+msgid "Resolved"
+msgstr "പരിഹരിച്ചു"
+
+msgid "Infrastructure Health"
+msgstr "അടിസ്ഥാന സൗകര്യങ്ങളുടെ സ്ഥിതി"
+
+msgid "Total Departments"
+msgstr "ആകെ ഡിപ്പാർട്ട്‌മെന്റുകൾ"
+
+msgid "Registered Users"
+msgstr "രജിസ്റ്റർ ചെയ്ത ഉപയോക്താക്കൾ"
+
+msgid "Critical Alerts"
+msgstr "അടിയന്തിര അറിയിപ്പുകൾ"
+
+msgid "Review Escalations"
+msgstr "എസ്‌കലേഷനുകൾ പരിശോധിക്കുക"
+
+msgid "System Analytics"
+msgstr "സിസ്റ്റം അനലിറ്റിക്സ്"
+
+msgid "Visual distribution of complaints across various parameters."
+msgstr "വിവിധ പാരാമീറ്ററുകളിലായി പരാതികളുടെ വിതരണം."
+
+msgid "Complaints by Status"
+msgstr "പരാതികൾ സ്റ്റാറ്റസ് അനുസരിച്ച്"
+
+msgid "Complaints by Priority"
+msgstr "പരാതികൾ മുൻഗണന അനുസരിച്ച്"
+
+msgid "Complaints by Department"
+msgstr "പരാതികൾ ഡിപ്പാർട്ട്‌മെന്റ് അനുസരിച്ച്"
+
+msgid "Recent Applications"
+msgstr "സമീപകാല അപേക്ഷകൾ"
+
+msgid "View All"
+msgstr "എല്ലാം കാണുക"
+
+msgid "Issue"
+msgstr "വിഷയം"
+
+msgid "Dept"
+msgstr "ഡിപ്പാർട്ട്‌മെന്റ്"
+
+msgid "Status"
+msgstr "സ്റ്റാറ്റസ്"
+
+msgid "Date"
+msgstr "തീയതി"
+
+msgid "By"
+msgstr "നൽകിയത്"
+
+msgid "Authority Management"
+msgstr "അതോറിറ്റി മാനേജ്മെന്റ്"
+
+msgid "Manage higher authority contacts and escalation protocols."
+msgstr "ഉന്നത അധികാര കേന്ദ്രങ്ങളും എസ്‌കലേഷൻ പ്രോട്ടോക്കോളുകളും കൈകാര്യം ചെയ്യുക."
+
+msgid "Add Authority"
+msgstr "അതോറിറ്റിയെ ചേർക്കുക"
+
+msgid "Active Protocol"
+msgstr "സജീവമായ പ്രോട്ടോക്കോൾ"
+
+msgid "Higher Authority Liaison"
+msgstr "ഉന്നത അധികാര ലെയ്‌സൺ"
+
+msgid "Update Liaison"
+msgstr "ലെയ്‌സൺ പുതുക്കുക"
+
+msgid "Delete"
+msgstr "ഇല്ലാതാക്കുക"
+
+msgid "Are you sure you want to delete this authority?"
+msgstr "ഈ അതോറിറ്റിയെ നീക്കം ചെയ്യാൻ നിങ്ങൾക്ക് ഉറപ്പാണോ?"
+
+msgid "Department Management"
+msgstr "ഡിപ്പാർട്ട്‌മെന്റ് മാനേജ്മെന്റ്"
+
+msgid "Configure and manage municipal service departments."
+msgstr "മുനിസിപ്പൽ സർവീസ് ഡിപ്പാർട്ട്‌മെന്റുകൾ ക്രമീകരിക്കുകയും നിയന്ത്രിക്കുകയും ചെയ്യുക."
+
+msgid "Add Department"
+msgstr "ഡിപ്പാർട്ട്‌മെന്റ് ചേർക്കുക"
+
+msgid "Department Name"
+msgstr "ഡിപ്പാർട്ട്‌മെന്റ് പേര്"
+
+msgid "Description"
+msgstr "വിവരണം"
+
+msgid "Higher Authority Contact"
+msgstr "ഉന്നത അധികാര കേന്ദ്രം"
+
+msgid "Actions"
+msgstr "നടപടികൾ"
+
+msgid "Edit"
+msgstr "തിരുത്തുക"
+
+msgid "Are you sure you want to delete this department? This action cannot be undone."
+msgstr "ഈ ഡിപ്പാർട്ട്‌മെന്റ് നീക്കം ചെയ്യാൻ നിങ്ങൾക്ക് ഉറപ്പാണോ? ഈ നടപടി മാറ്റാൻ കഴിയില്ല."
+
+msgid "No departments initialized."
+msgstr "ഡിപ്പാർട്ട്‌മെന്റുകൾ ഒന്നും ചേർത്തിട്ടില്ല."
+
+msgid "Add New Department"
+msgstr "പുതിയ ഡിപ്പാർട്ട്‌മെന്റ് ചേർക്കുക"
+
+msgid "Back"
+msgstr "പിന്നിലേക്ക്"
+
+msgid "Initialize Department"
+msgstr "ഡിപ്പാർട്ട്‌മെന്റ് തുടങ്ങുക"
+
+msgid "Edit Department:"
+msgstr "ഡിപ്പാർട്ട്‌മെന്റ് തിരുത്തുക:"
+
+msgid "Update Infrastructure Metadata"
+msgstr "വിവരങ്ങൾ പുതുക്കുക"
+
+msgid "Dashboard"
+msgstr "ഡാഷ്ബോർഡ്"
+
+msgid "Departments"
+msgstr "ഡിപ്പാർട്ട്‌മെന്റുകൾ"
+
+msgid "Users"
+msgstr "ഉപയോക്താക്കൾ"
+
+msgid "Admins"
+msgstr "അഡ്‌മിനുകൾ"
+
+msgid "Authorities"
+msgstr "അതോറിറ്റികൾ"
+
+msgid "System Settings"
+msgstr "സിസ്റ്റം ക്രമീകരണങ്ങൾ"
+
+msgid "Priority"
+msgstr "മുൻഗണന"
+
+msgid "Emergency"
+msgstr "അടിയന്തിരം"
+
+msgid "Normal"
+msgstr "സാധാരണം"
+
+msgid "Assigned Departments"
+msgstr "ചുമതലപ്പെടുത്തിയ ഡിപ്പാർട്ട്‌മെന്റുകൾ"
+
+msgid "Processing..."
+msgstr "നടന്നുകൊണ്ടിരിക്കുന്നു..."
+
+msgid "Reported Location"
+msgstr "റിപ്പോർട്ട് ചെയ്ത സ്ഥലം"
+
+msgid "Authority details will be available shortly."
+msgstr "അതോറിറ്റി വിവരങ്ങൾ ഉടൻ ലഭ്യമാകും."
+
+msgid "Admin Actions"
+msgstr "അഡ്മിൻ നടപടികൾ"
+
+msgid "Update Status"
+msgstr "സ്റ്റാറ്റസ് പുതുക്കുക"
+
+msgid "Apply Update"
+msgstr "മാറ്റം നടപ്പിലാക്കുക"
+
+msgid "Delete Complaint"
+msgstr "പരാതി നീക്കം ചെയ്യുക"
+
+msgid "Complaint Location"
+msgstr "പരാതി നടന്ന സ്ഥലം"
+
+msgid "Processing priority"
+msgstr "നടപടിക്കുള്ള മുൻഗണന"
+
+msgid "Manage Case"
+msgstr "കേസ് കൈകാര്യം ചെയ്യുക"
+
+msgid "No complaints currently require action in your department."
+msgstr "നിങ്ങളുടെ ഡിപ്പാർട്ട്‌മെന്റിൽ ഇപ്പോൾ നടപടി ആവശ്യമുള്ള പരാതികൾ ഒന്നുമില്ല."

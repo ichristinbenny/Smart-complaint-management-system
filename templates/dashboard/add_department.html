@@ -1,17 +1,21 @@
 {% extends 'dashboard/dashboard_base.html' %}
+{% load i18n %}
 
 {% block admin_content %}
 <div style="max-width: 600px; margin: 0 auto;">
     <div class="flex-between mb-4">
-        <h2 style="font-size: 1.5rem; font-weight: 700;">Add New Department</h2>
-        <a href="{% url 'departments_admin' %}" class="btn btn-secondary">
-            <i class="fa-solid fa-arrow-left" style="margin-right: 0.5rem;"></i> Back
+        <h2 style="font-size: 1.5rem; font-weight: 700;">{% trans 'Add New Department' %}</h2>
+        <a href="{% if next %}{{ next }}{% else %}{% url 'departments_admin' %}{% endif %}" class="btn btn-secondary">
+            <i class="fa-solid fa-arrow-left" style="margin-right: 0.5rem;"></i> {% trans 'Back' %}
         </a>
     </div>
 
     <div class="card">
         <form method="post">
             {% csrf_token %}
+            {% if next %}
+            <input type="hidden" name="next" value="{{ next }}">
+            {% endif %}
             {% for field in form %}
             <div class="form-group">
                 <label for="{{ field.id_for_label }}">{{ field.label }}</label>
@@ -24,7 +28,7 @@
                 {% endif %}
             </div>
             {% endfor %}
-            <button type="submit" class="btn btn-primary w-full">Initialize Department</button>
+            <button type="submit" class="btn btn-primary w-full">{% trans 'Initialize Department' %}</button>
         </form>
     </div>
 </div>

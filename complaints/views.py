@@ -7,6 +7,7 @@ from .models import Complaint, Department, Notification
 from .forms import ComplaintForm
 from .ml_utils import predict_department
 from django.utils import timezone
+from django.utils.translation import gettext as _
 
 def home(request):
     return render(request, 'home.html')
@@ -41,7 +42,7 @@ def submit_complaint(request):
                     Notification.objects.create(
                         user=admin,
                         complaint=complaint,
-                        message=f"New complaint received: {complaint.title}"
+                        message=_("New complaint received: %(title)s") % {'title': complaint.title}
                     )
 
             return redirect('complaint_success')
@@ -81,7 +82,7 @@ def update_complaint_status(request, pk):
     complaint = get_object_or_404(Complaint, pk=pk)
 
     if not request.user.is_department_admin:
-        return HttpResponseForbidden("You are not authorized to perform this action.")
+        return HttpResponseForbidden(_("You are not authorized to perform this action."))
 
     new_status = request.POST.get('status')
     if new_status and complaint.status != new_status:
@@ -90,7 +91,7 @@ def update_complaint_status(request, pk):
         Notification.objects.create(
             user=complaint.user,
             complaint=complaint,
-            message=f"Status updated to '{new_status}' for your complaint: {complaint.title}"
+            message=_("Status updated to '%(status)s' for your complaint: %(title)s") % {'status': new_status, 'title': complaint.title}
         )
 
     return redirect('complaint_detail', pk=pk)
@@ -101,13 +102,13 @@ def is_dept_admin(user):
 @login_required
 def department_complaints(request):
     if not request.user.is_department_admin:
-        return HttpResponseForbidden("You are not authorized to access this page.")
+        return HttpResponseForbidden(_("You are not authorized to access this page."))
 
     dept = request.user.department
     if not dept:
         messages.error(
             request,
-            "Your account is not assigned to any department yet. Please contact a superadmin to assign a department.",
+            _("Your account is not assigned to any department yet. Please contact a superadmin to assign a department."),
         )
         return render(
             request,
@@ -151,7 +152,7 @@ def department_complaints(request):
             Notification.objects.create(
                 user=c.user,
                 complaint=c,
-                message=f"Status updated to '{new_status}' for your complaint: {c.title}"
+                message=_("Status updated to '%(status)s' for your complaint: %(title)s") % {'status': new_status, 'title': c.title}
             )
 
         return redirect('department_complaints')
@@ -184,10 +185,10 @@ def ai_chatbot(request):
     message = (request.POST.get('message') or '').strip()
     if not message:
         return JsonResponse({
-            "reply": "Hi! You can ask me things like:\n"
+            "reply": _("Hi! You can ask me things like:\n"
                      "- status 3 (check complaint ID 3)\n"
                      "- Street light is not working\n"
-                     "- How do I report a complaint?"
+                     "- How do I report a complaint?")
         })
 
     lower = message.lower()
@@ -196,10 +197,10 @@ def ai_chatbot(request):
     if any(word in lower for word in ["hi", "hello", "help", "how to report"]):
         return JsonResponse({
             "reply": (
-                "I'm City Care Assistant.\n\n"
+                _("I'm City Care Assistant.\n\n"
                 "- To check a complaint status, type: status <complaint_id>\n"
                 "- To get help choosing a department, just describe your issue.\n"
-                "- Example: 'Garbage not collected for 3 days'."
+                "- Example: 'Garbage not collected for 3 days'.")
             )
         })
 
@@ -208,30 +209,36 @@ def ai_chatbot(request):
         parts = lower.split()
         if len(parts) < 2:
             return JsonResponse({
-                "reply": "Please provide a complaint ID. Example: status 5"
+                "reply": _("Please provide a complaint ID. Example: status 5")
             })
         try:
             c_id = int(parts[1])
         except ValueError:
             return JsonResponse({
-                "reply": "Complaint ID should be a number. Example: status 5"
+                "reply": _("Complaint ID should be a number. Example: status 5")
             })
 
         try:
             complaint = Complaint.objects.get(pk=c_id, user=request.user)
         except Complaint.DoesNotExist:
             return JsonResponse({
-                "reply": "I couldn't find a complaint with that ID under your account."
+                "reply": _("I couldn't find a complaint with that ID under your account.")
             })
 
         dept_qs = complaint.departments.all()
         dept_names = ", ".join([d.name for d in dept_qs]) if dept_qs.exists() else "Unassigned"
         return JsonResponse({
             "reply": (
-                f"Complaint ID {complaint.id} – \"{complaint.title}\"\n"
-                f"Department(s): {dept_names}\n"
-                f"Status: {complaint.status}\n"
-                f"Priority: {complaint.priority}"
+                _("Complaint ID %(id)s – \"%(title)s\"\n"
+                "Department(s): %(dept_names)s\n"
+                "Status: %(status)s\n"
+                "Priority: %(priority)s") % {
+                    'id': complaint.id,
+                    'title': complaint.title,
+                    'dept_names': dept_names,
+                    'status': complaint.status,
+                    'priority': complaint.priority
+                }
             )
         })
 
@@ -239,22 +246,22 @@ def ai_chatbot(request):
     if "how" in lower and "complaint" in lower:
         return JsonResponse({
             "reply": (
-                "To report a complaint:\n"
+                _("To report a complaint:\n"
                 "1) Click 'Submit Complaint' in the top menu.\n"
                 "2) Describe the issue clearly.\n"
                 "3) Add location and an image if possible.\n"
-                "4) Submit – we'll route it to the right department."
+                "4) Submit – we'll route it to the right department.")
             )
         })
 
     if "which department" in lower or "who handles" in lower:
         return JsonResponse({
             "reply": (
-                "Examples:\n"
+                _("Examples:\n"
                 "- Electricity: street lights, power cuts.\n"
                 "- Water Supply Department: water leakage, no water.\n"
                 "- Road & Transport Department: potholes, damaged roads.\n"
-                "- Garbage Department: trash not collected."
+                "- Garbage Department: trash not collected.")
             )
         })
 
@@ -264,16 +271,16 @@ def ai_chatbot(request):
         names = ", ".join([d.name for d in depts])
         return JsonResponse({
             "reply": (
-                f"It looks like this issue belongs to the following department(s): {names}.\n"
-                "You can click 'Submit Complaint' and describe the issue in detail."
+                _("It looks like this issue belongs to the following department(s): %(names)s.\n"
+                "You can click 'Submit Complaint' and describe the issue in detail.") % {'names': names}
             )
         })
 
     # Fallback
     return JsonResponse({
         "reply": (
-            "I'm not fully sure which department this belongs to.\n"
+            _("I'm not fully sure which department this belongs to.\n"
             "Please go to 'Submit Complaint' and provide more details – "
-            "our team will route it to the correct department."
+            "our team will route it to the correct department.")
         )
     })

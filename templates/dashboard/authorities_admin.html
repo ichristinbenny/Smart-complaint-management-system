@@ -1,11 +1,15 @@
 {% extends 'dashboard/dashboard_base.html' %}
+{% load i18n %}
 
 {% block admin_content %}
 <div class="flex-between mb-4">
     <div>
-        <h1 style="font-size: 1.75rem; font-weight: 700;">Authority Management</h1>
-        <p style="color: var(--text-muted); font-size: 0.875rem;">Manage higher authority contacts and escalation protocols.</p>
+        <h1 style="font-size: 1.75rem; font-weight: 700;">{% trans 'Authority Management' %}</h1>
+        <p style="color: var(--text-muted); font-size: 0.875rem;">{% trans 'Manage higher authority contacts and escalation protocols.' %}</p>
     </div>
+    <a href="{% url 'add_department' %}?next={% url 'authorities_admin' %}" class="btn btn-primary">
+        <i class="fa-solid fa-plus-circle" style="margin-right: 0.5rem;"></i> {% trans 'Add Authority' %}
+    </a>
 </div>
 
 <div class="grid-2">
@@ -13,20 +17,27 @@
     <div class="card">
         <div class="flex-between mb-3">
             <h3 style="font-size: 1.125rem; font-weight: 700; margin: 0;">{{ d.name }}</h3>
-            <span class="badge badge-success">Active Protocol</span>
+            <span class="badge badge-success">{% trans 'Active Protocol' %}</span>
         </div>
         
         <div style="margin-bottom: var(--space-4);">
-            <p style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem;">Higher Authority Liaison</p>
+            <p style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem;">{% trans 'Higher Authority Liaison' %}</p>
             <div style="background: #f8fafc; padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); font-family: monospace; font-size: 0.875rem; white-space: pre-wrap;">{{ d.higher_authority_contact }}</div>
         </div>
 
         <div style="display: flex; gap: var(--space-2);">
-            <a href="{% url 'edit_department' d.pk %}" class="btn btn-secondary btn-sm" style="flex: 1;">
-                <i class="fa-solid fa-pen-to-square"></i> Update Liaison
+            <a href="{% url 'edit_department' d.pk %}?next={% url 'authorities_admin' %}" class="btn btn-secondary btn-sm" style="flex: 1;">
+                <i class="fa-solid fa-pen-to-square"></i> {% trans 'Update Liaison' %}
             </a>
-            <button class="btn btn-secondary btn-sm" style="flex: 1;" onclick="alert('System alert: Higher authority notification sent for {{ d.name }}.')">
-                <i class="fa-solid fa-bell"></i> Test Trigger
+            <form action="{% url 'delete_department' d.pk %}" method="post" style="flex: 1;" onsubmit="return confirm('{% trans 'Are you sure you want to delete this authority?' %}')">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{% url 'authorities_admin' %}">
+                <button type="submit" class="btn btn-danger btn-sm" style="width: 100%;">
+                    <i class="fa-solid fa-trash"></i> {% trans 'Delete' %}
+                </button>
+            </form>
+            <button class="btn btn-secondary btn-sm" style="flex: 1; min-width: 40px;" onclick="alert('System alert: Higher authority notification sent for {{ d.name }}.')" title="Test Trigger">
+                <i class="fa-solid fa-bell"></i>
             </button>
         </div>
     </div>
