@@ -16,6 +16,7 @@ urlpatterns = [
     path('complaints/update/<int:pk>/', views.admin_update_complaint, name='admin_update_complaint'),
     path('complaints/delete/<int:pk>/', views.delete_complaint, name='delete_complaint'),
     path('complaints/bulk-delete/', views.bulk_delete_complaints, name='bulk_delete_complaints'),
+    path('complaints/report/', views.download_complaint_report, name='download_complaint_report'),
     
     # Department Management
     path('departments/', views.departments_admin, name='departments_admin'),

@@ -9,6 +9,12 @@ from accounts.models import User
 from accounts.forms import DepartmentAdminCreationForm
 from .decorators import superadmin_required
 import json
+import io
+from django.http import HttpResponse
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+from django.utils import timezone
+from datetime import datetime
 
 @superadmin_required
 def admin_dashboard(request):
@@ -229,3 +235,48 @@ def bulk_delete_complaints(request):
     else:
         messages.warning(request, "No complaints were selected.")
     return redirect('complaints_admin')
+
+@superadmin_required
+def download_complaint_report(request):
+    from_date_str = request.GET.get('from_date')
+    to_date_str = request.GET.get('to_date')
+    
+    complaints = Complaint.objects.all().order_by('-created_at')
+    
+    if from_date_str and to_date_str:
+        try:
+            from_date = datetime.strptime(from_date_str, '%Y-%m-%d')
+            to_date = datetime.strptime(to_date_str, '%Y-%m-%d')
+            # Make dates aware if using timezone support
+            from_date = timezone.make_aware(datetime.combine(from_date, datetime.min.time()))
+            to_date = timezone.make_aware(datetime.combine(to_date, datetime.max.time()))
+            
+            complaints = complaints.filter(created_at__range=(from_date, to_date))
+        except ValueError:
+            messages.error(request, _("Invalid date format. Please use YYYY-MM-DD."))
+            return redirect('complaints_admin')
+    
+    template_path = 'dashboard/report_pdf.html'
+    context = {
+        'complaints': complaints,
+        'from_date': from_date_str,
+        'to_date': to_date_str,
+        'generated_at': timezone.now(),
+    }
+    
+    # Create a Django response object, and specify content_type as pdf
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="complaint_report_{from_date_str}_to_{to_date_str}.pdf"'
+    
+    # find the template and render it.
+    template = get_template(template_path)
+    html = template.render(context)
+
+    # create a pdf
+    pisa_status = pisa.CreatePDF(
+       html, dest=response)
+    
+    # if error then show some funny view
+    if pisa_status.err:
+       return HttpResponse('We had some errors <pre>' + html + '</pre>')
+    return response
