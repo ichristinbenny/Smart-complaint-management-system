@@ -280,3 +280,114 @@ def download_complaint_report(request):
     if pisa_status.err:
        return HttpResponse('We had some errors <pre>' + html + '</pre>')
     return response
+
+
+
+# --- Super Admin: Staff Management -------------------------------------------
+
+
+
+from complaints.models import DepartmentStaff
+
+from complaints.forms import DepartmentStaffCreationForm, DepartmentStaffEditForm
+
+class _SuperAdminStaffCreationForm(DepartmentStaffCreationForm):
+    field_order = ['username', 'first_name', 'last_name', 'email', 'password', 'phone', 'department']
+    class Meta(DepartmentStaffCreationForm.Meta):
+        fields = ['phone', 'department']
+
+class _SuperAdminStaffEditForm(DepartmentStaffEditForm):
+    field_order = ['username', 'first_name', 'last_name', 'email', 'phone', 'department']
+    class Meta(DepartmentStaffEditForm.Meta):
+        fields = ['phone', 'department']
+
+
+
+
+
+@superadmin_required
+
+def manage_staff(request):
+
+    staff_list = DepartmentStaff.objects.select_related('department').all()
+
+    return render(request, 'dashboard/manage_staff.html', {'staff_list': staff_list})
+
+
+
+
+
+@superadmin_required
+
+def add_staff(request):
+
+    if request.method == 'POST':
+
+        form = _SuperAdminStaffCreationForm(request.POST)
+
+        if form.is_valid():
+
+            form.save()
+
+            messages.success(request, _('Staff member added successfully.'))
+
+            return redirect('manage_staff_admin')
+
+    else:
+
+        form = _SuperAdminStaffCreationForm()
+
+    return render(request, 'dashboard/add_staff.html', {'form': form})
+
+
+
+
+
+@superadmin_required
+
+def edit_staff(request, pk):
+
+    staff = get_object_or_404(DepartmentStaff, pk=pk)
+
+    if request.method == 'POST':
+
+        form = _SuperAdminStaffEditForm(request.POST, instance=staff)
+
+        if form.is_valid():
+
+            form.save()
+
+            messages.success(request, _('Staff member updated successfully.'))
+
+            return redirect('manage_staff_admin')
+
+    else:
+
+        form = _SuperAdminStaffEditForm(instance=staff)
+
+    return render(request, 'dashboard/edit_staff.html', {'form': form, 'staff': staff})
+
+
+
+
+
+@superadmin_required
+
+@require_POST
+
+def delete_staff(request, pk):
+
+    staff = get_object_or_404(DepartmentStaff, pk=pk)
+
+    name = staff.user.get_full_name() or staff.user.username
+    user = staff.user
+    staff.delete()
+    if user:
+        user.delete()
+
+    messages.success(request, _("Staff member '%(name)s' deleted.") % {'name': name})
+
+    return redirect('manage_staff_admin')
+
+
+

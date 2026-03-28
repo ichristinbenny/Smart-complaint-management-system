@@ -24,6 +24,12 @@ urlpatterns = [
     path('departments/edit/<int:pk>/', views.edit_department, name='edit_department'),
     path('departments/delete/<int:pk>/', views.delete_department, name='delete_department'),
     
+    # Staff Management (Super Admin)
+    path('staff/', views.manage_staff, name='manage_staff_admin'),
+    path('staff/add/', views.add_staff, name='add_staff_admin'),
+    path('staff/<int:pk>/edit/', views.edit_staff, name='edit_staff_admin'),
+    path('staff/<int:pk>/delete/', views.delete_staff, name='delete_staff_admin'),
+    
     # Authority & Settings
     path('authorities/', views.authorities_admin, name='authorities_admin'),
     path('settings/', views.settings_admin, name='settings_admin'),

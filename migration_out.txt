@@ -1,0 +1,1 @@
+Field 'user' on model 'departmentstaff' not migrated: it is impossible to add a non-nullable field without specifying a default.

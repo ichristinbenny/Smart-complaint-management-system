@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+<div class="form-page" style="max-width: 600px;">
+    <div class="page-header mb-4">
+        <div>
+            <h1 class="page-header__title">{% trans 'Edit Staff Member' %}</h1>
+            <p class="page-header__subtitle">{% trans 'Editing' %}: {{ staff.name }}</p>
+        </div>
+        <div>
+            <a href="{% url 'dept_manage_staff' %}" class="btn btn-secondary">
+                <i class="fa-solid fa-arrow-left"></i> {% trans 'Back' %}
+            </a>
+        </div>
+    </div>
+
+    <div class="card card--elevated">
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                <div class="small" style="color: var(--danger); margin-top: 0.25rem;">{{ field.errors.0 }}</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary btn-block">{% trans 'Save Changes' %}</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

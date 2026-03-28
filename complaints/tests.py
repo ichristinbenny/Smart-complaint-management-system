@@ -19,11 +19,12 @@ class ComplaintTests(TestCase):
         # Assuming training happened, "Street light not working" should be Electricity
         # If model is loaded, it should predict correct.
         
-        dept = predict_department("Street light not working")
+        depts = predict_department("Street light not working")
         # Note: If ML model logic is robust, this passes. If not, might fail. 
         # But for keyword fallback it definitely works.
-        self.assertIsNotNone(dept)
-        self.assertIn(dept.name, ['Electricity', 'Water', 'Road', 'Garbage', 'Public Safety'])
+        self.assertIsNotNone(depts)
+        for dept in depts:
+            self.assertIn(dept.name, ['Electricity', 'Water', 'Road', 'Garbage', 'Public Safety'])
 
     def test_complaint_submission(self):
         self.client.login(username='citizen', password='password')
@@ -38,7 +39,10 @@ class ComplaintTests(TestCase):
         c = Complaint.objects.first()
         self.assertEqual(c.title, 'No water')
         # Check if department was assigned (ML or keyword)
-        self.assertTrue(c.department is None or c.department.name in ['Water', 'Electricity'])
+        assigned_depts = c.departments.all()
+        if assigned_depts.exists():
+            for d in assigned_depts:
+                self.assertIn(d.name, ['Water', 'Electricity'])
 
     def test_dashboard_access(self):
         self.client.login(username='admin', password='password')

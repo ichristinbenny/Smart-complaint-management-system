@@ -1,0 +1,27 @@
+Creating test database for alias 'default'...
+E.E
+======================================================================
+ERROR: test_complaint_submission (complaints.tests.ComplaintTests.test_complaint_submission)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\Projectx\complaints\tests.py", line 41, in test_complaint_submission
+    self.assertTrue(c.department is None or c.department.name in ['Water', 'Electricity'])
+                    ^^^^^^^^^^^^
+AttributeError: 'Complaint' object has no attribute 'department'
+
+======================================================================
+ERROR: test_predict_department (complaints.tests.ComplaintTests.test_predict_department)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "E:\Projectx\complaints\tests.py", line 26, in test_predict_department
+    self.assertIn(dept.name, ['Electricity', 'Water', 'Road', 'Garbage', 'Public Safety'])
+                  ^^^^^^^^^
+AttributeError: 'list' object has no attribute 'name'
+
+----------------------------------------------------------------------
+Ran 3 tests in 3.244s
+
+FAILED (errors=2)
+Destroying test database for alias 'default'...
+Found 3 test(s).
+System check identified no issues (0 silenced).

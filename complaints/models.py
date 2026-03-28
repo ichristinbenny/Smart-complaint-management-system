@@ -19,6 +19,21 @@ class Department(models.Model):
     def __str__(self):
         return self.name
 
+class DepartmentStaff(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name=_("user"))
+    phone = models.CharField(_("phone"), max_length=15, blank=True, null=True)
+    department = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='staff_members', verbose_name=_("department"))
+    created_at = models.DateTimeField(_("created at"), auto_now_add=True)
+
+    class Meta:
+        verbose_name = _("department staff")
+        verbose_name_plural = _("department staff")
+
+    def __str__(self):
+        full_name = self.user.get_full_name()
+        display_name = full_name if full_name else self.user.username
+        return f"{display_name} ({self.department.name})"
+
 class Complaint(models.Model):
     PRIORITY_CHOICES = [
         ('Normal', _('Normal')),
@@ -39,8 +54,10 @@ class Complaint(models.Model):
     longitude = models.DecimalField(_("longitude"), max_digits=9, decimal_places=6, null=True, blank=True)
     image = models.ImageField(_("image"), upload_to='complaints/', blank=True, null=True)
     departments = models.ManyToManyField(Department, blank=True, verbose_name=_("departments"))
+    assigned_staff = models.ForeignKey(DepartmentStaff, on_delete=models.SET_NULL, null=True, blank=True, related_name='assigned_complaints', verbose_name=_("assigned staff"))
     priority = models.CharField(_("priority"), max_length=20, choices=PRIORITY_CHOICES, default='Normal')
     status = models.CharField(_("status"), max_length=20, choices=STATUS_CHOICES, default='Pending')
+    staff_remarks = models.TextField(_("staff remarks"), blank=True, default='')
     is_escalated = models.BooleanField(_("is escalated"), default=False)
     created_at = models.DateTimeField(_("created at"), auto_now_add=True)
     updated_at = models.DateTimeField(_("updated at"), auto_now=True)

@@ -1,0 +1,53 @@
+{% extends 'dashboard/dashboard_base.html' %}
+{% load i18n %}
+
+{% block admin_content %}
+<div class="form-page" style="max-width: 600px;">
+    <div class="page-header mb-4">
+        <div>
+            <h1 class="page-header__title">{% trans 'Add Staff Member' %}</h1>
+            <p class="page-header__subtitle">{% trans 'Add a new department staff member.' %}</p>
+        </div>
+        <div>
+            <a href="{% url 'manage_staff_admin' %}" class="btn btn-secondary">
+                <i class="fa-solid fa-arrow-left"></i> {% trans 'Back' %}
+            </a>
+        </div>
+    </div>
+
+    <div class="card card--elevated">
+        <form method="post">
+            {% csrf_token %}
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                <div class="form-group">
+                    <label for="{{ form.first_name.id_for_label }}">{{ form.first_name.label }}</label>
+                    {{ form.first_name }}
+                    {% if form.first_name.errors %}
+                        <div class="small" style="color: var(--danger); margin-top: 0.25rem;">{{ form.first_name.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.last_name.id_for_label }}">{{ form.last_name.label }}</label>
+                    {{ form.last_name }}
+                    {% if form.last_name.errors %}
+                        <div class="small" style="color: var(--danger); margin-top: 0.25rem;">{{ form.last_name.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% for field in form %}
+                {% if field.name != 'first_name' and field.name != 'last_name' %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                    <div class="small" style="color: var(--danger); margin-top: 0.25rem;">{{ field.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                {% endif %}
+            {% endfor %}
+            <button type="submit" class="btn btn-primary btn-block">{% trans 'Add Staff' %}</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

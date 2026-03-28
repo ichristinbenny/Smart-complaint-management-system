@@ -25,15 +25,31 @@
 
             <nav class="nav-desktop">
                 <div class="nav-links">
-                    <a href="{% url 'home' %}" class="nav-link">{% trans 'Home' %}</a>
+                    {% if user.is_authenticated %}
+                        {% if user.is_superuser %}
+                            <a href="{% url 'home' %}" class="nav-link">{% trans 'Home' %}</a>
+                            <a href="{% url 'admin_dashboard' %}" class="nav-link">{% trans 'Dashboard' %}</a>
+                        {% elif user.is_department_admin %}
+                            <a href="{% url 'home' %}" class="nav-link">{% trans 'Home' %}</a>
+                            <a href="{% url 'department_dashboard' %}" class="nav-link">{% trans 'Dashboard' %}</a>
+                        {% elif is_staff_user %}
+                            <a href="{% url 'staff_dashboard' %}" class="nav-link">{% trans 'Home' %}</a>
+                        {% else %}
+                            <a href="{% url 'home' %}" class="nav-link">{% trans 'Home' %}</a>
+                        {% endif %}
+                    {% else %}
+                        <a href="{% url 'home' %}" class="nav-link">{% trans 'Home' %}</a>
+                    {% endif %}
                     {% if user.is_authenticated %}
                         {% if user.is_citizen %}
                             <a href="{% url 'submit_complaint' %}" class="nav-link">{% trans 'Submit Complaint' %}</a>
                             <a href="{% url 'my_complaints' %}" class="nav-link">{% trans 'My Complaints' %}</a>
                         {% elif user.is_department_admin %}
                             <a href="{% url 'department_complaints' %}" class="nav-link">{% trans 'Manage Complaints' %}</a>
+                            <a href="{% url 'dept_manage_staff' %}" class="nav-link">{% trans 'Manage Staff' %}</a>
                         {% elif user.is_superuser %}
-                            <a href="{% url 'admin_dashboard' %}" class="nav-link">{% trans 'Dashboard' %}</a>
+                        {% elif is_staff_user %}
+                            <a href="{% url 'staff_dashboard' %}" class="nav-link">{% trans 'My Assignments' %}</a>
                         {% endif %}
                     {% endif %}
                 </div>
@@ -109,15 +125,31 @@
 
         <div class="nav-overlay" id="nav-overlay" aria-hidden="true"></div>
         <div class="nav-mobile" id="nav-mobile" aria-hidden="true">
-            <a href="{% url 'home' %}" class="nav-link">{% trans 'Home' %}</a>
+            {% if user.is_authenticated %}
+                        {% if user.is_superuser %}
+                            <a href="{% url 'home' %}" class="nav-link">{% trans 'Home' %}</a>
+                            <a href="{% url 'admin_dashboard' %}" class="nav-link">{% trans 'Dashboard' %}</a>
+                        {% elif user.is_department_admin %}
+                            <a href="{% url 'home' %}" class="nav-link">{% trans 'Home' %}</a>
+                            <a href="{% url 'department_dashboard' %}" class="nav-link">{% trans 'Dashboard' %}</a>
+                        {% elif is_staff_user %}
+                            <a href="{% url 'staff_dashboard' %}" class="nav-link">{% trans 'Home' %}</a>
+                        {% else %}
+                            <a href="{% url 'home' %}" class="nav-link">{% trans 'Home' %}</a>
+                        {% endif %}
+                    {% else %}
+                        <a href="{% url 'home' %}" class="nav-link">{% trans 'Home' %}</a>
+                    {% endif %}
             {% if user.is_authenticated %}
                 {% if user.is_citizen %}
                     <a href="{% url 'submit_complaint' %}" class="nav-link">{% trans 'Submit Complaint' %}</a>
                     <a href="{% url 'my_complaints' %}" class="nav-link">{% trans 'My Complaints' %}</a>
                 {% elif user.is_department_admin %}
                     <a href="{% url 'department_complaints' %}" class="nav-link">{% trans 'Manage Complaints' %}</a>
+                    <a href="{% url 'dept_manage_staff' %}" class="nav-link">{% trans 'Manage Staff' %}</a>
                 {% elif user.is_superuser %}
-                    <a href="{% url 'admin_dashboard' %}" class="nav-link">{% trans 'Dashboard' %}</a>
+                {% elif is_staff_user %}
+                    <a href="{% url 'staff_dashboard' %}" class="nav-link">{% trans 'My Assignments' %}</a>
                 {% endif %}
             {% endif %}
             <div class="nav-actions">

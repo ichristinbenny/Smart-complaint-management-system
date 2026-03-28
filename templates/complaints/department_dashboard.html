@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+<div class="page-header mb-5">
+    <div>
+        <h1 class="page-header__title">{% if department %}{{ department.name }} {% trans 'Dashboard' %}{% else %}{% trans 'Department Dashboard' %}{% endif %}</h1>
+        <p class="page-header__subtitle">{% trans 'Overview of your department metrics and recent activity.' %}</p>
+    </div>
+</div>
+
+{% if error %}
+<div class="card card--elevated mb-5" style="border-left: 4px solid var(--danger); padding: var(--space-3);">
+    <p class="text-danger" style="margin: 0; font-weight: 600;">{{ error }}</p>
+</div>
+{% else %}
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+    <!-- Stat Card 1 -->
+    <div class="card card--elevated" style="text-align: center; padding: 2rem;">
+        <div style="font-size: 2.5rem; font-weight: 800; color: var(--primary);">{{ total_complaints }}</div>
+        <div class="text-muted" style="font-weight: 600; margin-top: 0.5rem; text-transform: uppercase; font-size: 0.85rem;">{% trans 'Total Complaints' %}</div>
+    </div>
+    
+    <!-- Stat Card 2 -->
+    <div class="card card--elevated" style="text-align: center; padding: 2rem;">
+        <div style="font-size: 2.5rem; font-weight: 800; color: var(--warning);">{{ pending }}</div>
+        <div class="text-muted" style="font-weight: 600; margin-top: 0.5rem; text-transform: uppercase; font-size: 0.85rem;">{% trans 'Pending' %}</div>
+    </div>
+
+    <!-- Stat Card 3 -->
+    <div class="card card--elevated" style="text-align: center; padding: 2rem;">
+        <div style="font-size: 2.5rem; font-weight: 800; color: var(--info);">{{ in_progress }}</div>
+        <div class="text-muted" style="font-weight: 600; margin-top: 0.5rem; text-transform: uppercase; font-size: 0.85rem;">{% trans 'In Progress' %}</div>
+    </div>
+
+    <!-- Stat Card 4 -->
+    <div class="card card--elevated" style="text-align: center; padding: 2rem;">
+        <div style="font-size: 2.5rem; font-weight: 800; color: var(--success);">{{ resolved }}</div>
+        <div class="text-muted" style="font-weight: 600; margin-top: 0.5rem; text-transform: uppercase; font-size: 0.85rem;">{% trans 'Resolved' %}</div>
+    </div>
+
+    <!-- Stat Card 5 -->
+    <div class="card card--elevated" style="text-align: center; padding: 2rem;">
+        <div style="font-size: 2.5rem; font-weight: 800; color: var(--text);">{{ staff_count }}</div>
+        <div class="text-muted" style="font-weight: 600; margin-top: 0.5rem; text-transform: uppercase; font-size: 0.85rem;">{% trans 'Active Staff' %}</div>
+    </div>
+</div>
+
+<h2 class="mb-4" style="font-size: 1.5rem;">{% trans 'Recent Complaints' %}</h2>
+<div class="card card--elevated">
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>{% trans 'Reference' %}</th>
+                    <th>{% trans 'Complaint Detail' %}</th>
+                    <th style="text-align: center;">{% trans 'Status' %}</th>
+                    <th>{% trans 'Timeline' %}</th>
+                    <th style="text-align: center;">{% trans 'Actions' %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in recent_complaints %}
+                <tr>
+                    <td data-label="{% trans 'Reference' %}">#{{ c.pk }}</td>
+                    <td data-label="{% trans 'Complaint Detail' %}">
+                        <div style="font-weight: 600; margin-bottom: 0.25rem;">{{ c.title }}</div>
+                        <div class="small text-muted" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 280px;">{{ c.description }}</div>
+                    </td>
+                    <td data-label="{% trans 'Status' %}" style="text-align: center;">
+                        {% if c.status == 'Resolved' or c.status == 'Completed' %}
+                            <span class="badge badge-success">{{ c.status }}</span>
+                        {% elif c.status == 'In Progress' %}
+                            <span class="badge badge-progress">{% trans 'In Progress' %}</span>
+                        {% elif c.status == 'Needs Review' %}
+                            <span class="badge badge-pending">{% trans 'Needs Review' %}</span>
+                        {% else %}
+                            <span class="badge badge-pending">{{ c.status }}</span>
+                        {% endif %}
+                    </td>
+                    <td data-label="{% trans 'Timeline' %}">
+                        <div>{% trans 'Received' %}: {{ c.created_at|date:"M d" }}</div>
+                        <div class="small text-muted" style="font-style: italic;">{% trans 'Priority' %}: {{ c.get_priority_display }}</div>
+                    </td>
+                    <td data-label="{% trans 'Actions' %}" style="text-align: center;">
+                        <a href="{% url 'complaint_detail' c.pk %}" class="btn btn-secondary">{% trans 'View' %}</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center text-muted" style="padding: var(--space-8);">{% trans 'No complaints found.' %}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endif %}
+{% endblock %}

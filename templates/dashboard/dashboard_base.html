@@ -23,6 +23,9 @@
         <a href="{% url 'manage_admins' %}" class="sidebar-link {% if request.resolver_match.url_name == 'manage_admins' or request.resolver_match.url_name == 'add_admin' %}active{% endif %}">
             <i class="fa-solid fa-user-shield"></i> {% trans 'Admins' %}
         </a>
+        <a href="{% url 'manage_staff_admin' %}" class="sidebar-link {% if request.resolver_match.url_name == 'manage_staff_admin' or request.resolver_match.url_name == 'add_staff_admin' or request.resolver_match.url_name == 'edit_staff_admin' %}active{% endif %}">
+            <i class="fa-solid fa-user-gear"></i> {% trans 'Staff' %}
+        </a>
         <a href="{% url 'authorities_admin' %}" class="sidebar-link {% if request.resolver_match.url_name == 'authorities_admin' %}active{% endif %}">
             <i class="fa-solid fa-gavel"></i> {% trans 'Authorities' %}
         </a>

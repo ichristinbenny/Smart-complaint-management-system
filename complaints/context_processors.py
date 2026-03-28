@@ -6,6 +6,7 @@ def notifications(request):
         recent_notifications = request.user.notifications.all()[:5]
         return {
             'unread_notifications_count': unread_count,
-            'recent_notifications': recent_notifications
+            'recent_notifications': recent_notifications,
+            'is_staff_user': hasattr(request.user, 'departmentstaff')
         }
     return {}

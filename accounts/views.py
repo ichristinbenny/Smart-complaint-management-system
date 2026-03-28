@@ -12,3 +12,15 @@ def register(request):
     else:
         form = CitizenRegistrationForm()
     return render(request, 'accounts/register.html', {'form': form})
+
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def role_based_redirect(request):
+    if request.user.is_superuser:
+        return redirect('admin_dashboard')
+    if request.user.is_department_admin:
+        return redirect('home')
+    if hasattr(request.user, 'departmentstaff'):
+        return redirect('staff_dashboard')
+    return redirect('my_complaints')

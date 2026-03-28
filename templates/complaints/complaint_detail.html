@@ -36,6 +36,10 @@
                 <a href="{% url 'department_complaints' %}" class="btn btn-secondary">
                     <i class="fa-solid fa-arrow-left"></i> {% trans 'Back to List' %}
                 </a>
+            {% elif is_staff_user %}
+                <a href="{% url 'staff_dashboard' %}" class="btn btn-secondary">
+                    <i class="fa-solid fa-arrow-left"></i> {% trans 'Back to Assignments' %}
+                </a>
             {% else %}
                 <a href="{% url 'my_complaints' %}" class="btn btn-secondary">
                     <i class="fa-solid fa-arrow-left"></i> {% trans 'Back to My Reports' %}
@@ -174,6 +178,91 @@
                         <p class="small text-muted">{% trans 'Authority details will be available shortly.' %}</p>
                     {% endfor %}
                 </div>
+            </div>
+            {% endif %}
+
+
+            {% if complaint.assigned_staff %}
+            <div class="card card--elevated" style="border-left: 4px solid var(--primary);">
+                <h3 style="font-size: var(--text-base); font-weight: 700; margin-bottom: var(--space-3); display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fa-solid fa-user-gear" style="color: var(--primary);"></i>
+                    {% trans 'Assigned Staff' %}
+                </h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3);">
+                    <div>
+                        <p class="stat-card__label" style="margin-bottom: 0.15rem;">{% trans 'Name' %}</p>
+                        <p style="font-weight: 500;">{{ complaint.assigned_staff.user.first_name }} {{ complaint.assigned_staff.user.last_name }}</p>
+                    </div>
+                    <div>
+                        <p class="stat-card__label" style="margin-bottom: 0.15rem;">{% trans 'Email' %}</p>
+                        <p style="font-weight: 500;">{{ complaint.assigned_staff.email }}</p>
+                    </div>
+                    <div>
+                        <p class="stat-card__label" style="margin-bottom: 0.15rem;">{% trans 'Department' %}</p>
+                        <p style="font-weight: 500;">{{ complaint.assigned_staff.department.name }}</p>
+                    </div>
+                    {% if complaint.assigned_staff.phone %}
+                    <div>
+                        <p class="stat-card__label" style="margin-bottom: 0.15rem;">{% trans 'Phone' %}</p>
+                        <p style="font-weight: 500;">{{ complaint.assigned_staff.phone }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+                {% if complaint.staff_remarks %}
+                <div style="margin-top: var(--space-3); padding-top: var(--space-3); border-top: 1px solid var(--border);">
+                    <p class="stat-card__label" style="margin-bottom: 0.25rem;">{% trans 'Staff Remarks' %}</p>
+                    <p style="white-space: pre-wrap; font-size: var(--text-sm); line-height: 1.6;">{{ complaint.staff_remarks }}</p>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            {% if user.is_department_admin %}
+            <div class="card" style="background: var(--bg);">
+                <h3 style="font-size: var(--text-base); font-weight: 700; margin-bottom: var(--space-3); display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fa-solid fa-user-plus" style="color: var(--primary);"></i>
+                    {% trans 'Assign Staff' %}
+                </h3>
+                <form method="post" action="{% url 'assign_staff' complaint.pk %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label>{% trans 'Select Staff Member' %}</label>
+                        <select name="staff_id" style="font-size: var(--text-sm);">
+                            <option value="">— {% trans 'Choose staff' %} —</option>
+                            {% for s in available_staff %}
+                            <option value="{{ s.pk }}" {% if complaint.assigned_staff and complaint.assigned_staff.pk == s.pk %}selected{% endif %}>{{ s.user.first_name }} {{ s.user.last_name }} ({{ s.email }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">
+                        {% if complaint.assigned_staff %}{% trans 'Reassign Staff' %}{% else %}{% trans 'Assign Staff' %}{% endif %}
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+
+            {% if is_staff_user and complaint.assigned_staff %}
+            <div class="card" style="background: var(--bg);">
+                <h3 style="font-size: var(--text-base); font-weight: 700; margin-bottom: var(--space-3); display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fa-solid fa-clipboard-check" style="color: var(--primary);"></i>
+                    {% trans 'Staff Actions' %}
+                </h3>
+                <form method="post" action="{% url 'staff_update_complaint' complaint.pk %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label>{% trans 'Update Status' %}</label>
+                        <select name="status" style="font-size: var(--text-sm);">
+                            <option value="">— {% trans 'No change' %} —</option>
+                            <option value="In Progress" {% if complaint.status == 'In Progress' %}selected{% endif %}>{% trans 'In Progress' %}</option>
+                            <option value="Resolved" {% if complaint.status == 'Resolved' %}selected{% endif %}>{% trans 'Resolved' %}</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>{% trans 'Remarks' %}</label>
+                        <textarea name="remarks" rows="3" style="font-size: var(--text-sm);" placeholder="{% trans 'Add your remarks here...' %}">{{ complaint.staff_remarks }}</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">{% trans 'Submit Update' %}</button>
+                </form>
             </div>
             {% endif %}
 
